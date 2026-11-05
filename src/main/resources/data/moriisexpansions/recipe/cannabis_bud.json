@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "moriisexpansions:cannabis_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "moriisexpansions:cannabis_bud"
+  }
+}

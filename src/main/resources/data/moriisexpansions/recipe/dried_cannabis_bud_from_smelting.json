@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 800,
+  "experience": 0.2,
+  "ingredient": {
+    "item": "moriisexpansions:cannabis_bud"
+  },
+  "result": {
+    "id": "moriisexpansions:dried_cannabis_bud"
+  }
+}

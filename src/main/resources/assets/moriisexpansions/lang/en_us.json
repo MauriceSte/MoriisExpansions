@@ -4,5 +4,7 @@
   "item.moriisexpansions.cannabis_seeds": "Cannabis Seeds",
 
   "block.moriisexpansions.cannabis_block": "Cannabis Block",
-  "block.moriisexpansions.dried_cannabis_block": "Dried Cannabis Block"
+  "block.moriisexpansions.dried_cannabis_block": "Dried Cannabis Block",
+
+  "creativetab.moriisexpansions.mod_tab": "Moriis Expansions"
 }
