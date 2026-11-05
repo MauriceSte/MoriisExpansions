@@ -1,6 +1,7 @@
 package net.moriis.moriisexpansions;
 
 import net.minecraft.world.item.CreativeModeTabs;
+import net.moriis.moriisexpansions.block.ModBlocks;
 import net.moriis.moriisexpansions.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,6 +31,7 @@ public class MoriisExpansions {
         NeoForge.EVENT_BUS.register(this);
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -48,6 +50,10 @@ public class MoriisExpansions {
             event.accept(ModItems.CANNABIS_BUD);
             event.accept(ModItems.DRIED_CANNABIS_BUD);
             event.accept(ModItems.CANNABIS_SEEDS);
+        }
+        if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS){
+            event.accept(ModBlocks.CANNABIS_BLOCK);
+            event.accept(ModBlocks.DRIED_CANNABIS_BLOCK);
         }
     }
 

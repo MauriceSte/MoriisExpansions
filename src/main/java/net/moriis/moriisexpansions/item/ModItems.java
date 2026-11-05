@@ -1,7 +1,6 @@
 package net.moriis.moriisexpansions.item;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.moriis.moriisexpansions.MoriisExpansions;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
