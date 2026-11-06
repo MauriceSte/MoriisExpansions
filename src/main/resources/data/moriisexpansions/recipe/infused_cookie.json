@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:wheat"
+    },
+    {
+      "item": "minecraft:cocoa_beans"
+    },
+    {
+      "item": "moriisexpansions:grinded_marijuana"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "moriisexpansions:infused_cookie"
+  }
+}

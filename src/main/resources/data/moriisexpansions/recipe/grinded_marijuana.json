@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "moriisexpansions:dried_cannabis_bud"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "moriisexpansions:grinded_marijuana"
+  }
+}

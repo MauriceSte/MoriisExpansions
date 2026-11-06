@@ -38,9 +38,9 @@ public class ModBlocks {
 
     public static final DeferredBlock<CannabisCropBlock> CROP =
             BLOCKS.register("cannabis_plant",
-                    () -> new CannabisCropBlock(
+                    () -> new CannabisCropBlock( 
                             BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT),
-                            () -> ModItems.CANNABIS_SEEDS.get()
+                            ModItems.CANNABIS_SEEDS
                     ));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {

@@ -19,6 +19,16 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> CANNABIS_LEAF = ITEMS.register("cannabis_leaf",
             () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> ROLLING_PAPER = ITEMS.register("rolling_paper",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> JOINT = ITEMS.register("joint",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> INFUSED_COOKIE = ITEMS.register("infused_cookie",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> GRINDED_MARIJUANA = ITEMS.register("grinded_marijuana",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> KIEF = ITEMS.register("kief",
+            () -> new Item(new Item.Properties()));
 
     //Special BlockItem for Seed
     public static final DeferredItem<ItemNameBlockItem> CANNABIS_SEEDS =

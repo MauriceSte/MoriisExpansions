@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "moriisexpansions:grinded_marijuana"
+    },
+    {
+      "item": "moriisexpansions:rolling_paper"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "moriisexpansions:joint"
+  }
+}

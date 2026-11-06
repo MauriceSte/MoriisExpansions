@@ -24,8 +24,13 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.CANNABIS_BUD);
                         output.accept(ModBlocks.DRIED_CANNABIS_BLOCK);
                         output.accept(ModItems.DRIED_CANNABIS_BUD);
+                        output.accept(ModItems.GRINDED_MARIJUANA);
+                        output.accept(ModItems.KIEF);
                         output.accept(ModItems.CANNABIS_SEEDS);
                         output.accept(ModItems.CANNABIS_LEAF);
+                        output.accept(ModItems.INFUSED_COOKIE);
+                        output.accept(ModItems.JOINT);
+                        output.accept(ModItems.ROLLING_PAPER);
                     }).build());
 
     public static void register(IEventBus eventBus) {
