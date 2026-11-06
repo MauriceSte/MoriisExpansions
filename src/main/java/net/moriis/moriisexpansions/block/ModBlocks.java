@@ -3,13 +3,13 @@ package net.moriis.moriisexpansions.block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.PitcherCropBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.moriis.moriisexpansions.MoriisExpansions;
+import net.moriis.moriisexpansions.block.custom.CannabisCropBlock;
 import net.moriis.moriisexpansions.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -36,7 +36,14 @@ public class ModBlocks {
                     .sound(SoundType.MANGROVE_ROOTS)
                     .pushReaction(PushReaction.DESTROY)));
 
-    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block){
+    public static final DeferredBlock<CannabisCropBlock> CROP =
+            BLOCKS.register("cannabis_plant",
+                    () -> new CannabisCropBlock(
+                            BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT),
+                            () -> ModItems.CANNABIS_SEEDS.get()
+                    ));
+
+    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
         return toReturn;

@@ -17,7 +17,7 @@ public class ModCreativeModeTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MoriisExpansions.MOD_ID);
 
     public static final Supplier<CreativeModeTab> MOD_TAB = CREATIVE_MODE_TABS.register("mod_tab",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.CANNABIS_BUD.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModItems.CANNABIS_LEAF.get()))
                     .title(Component.translatable("creativetab.moriisexpansions.mod_tab"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModBlocks.CANNABIS_BLOCK);
@@ -25,6 +25,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModBlocks.DRIED_CANNABIS_BLOCK);
                         output.accept(ModItems.DRIED_CANNABIS_BUD);
                         output.accept(ModItems.CANNABIS_SEEDS);
+                        output.accept(ModItems.CANNABIS_LEAF);
                     }).build());
 
     public static void register(IEventBus eventBus) {

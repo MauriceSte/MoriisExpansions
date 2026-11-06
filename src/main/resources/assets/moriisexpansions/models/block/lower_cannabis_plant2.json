@@ -1,0 +1,7 @@
+{
+  "parent": "moriisexpansions:block/cross_crop",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "cross": "moriisexpansions:block/lower_cannabis_plant2"
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": "6",
+            "half": "lower"
+          }
+        },
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.3
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_bud"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": "3",
+            "half": "lower"
+          }
+        },
+        {
+          "condition": "minecraft:random_chance",
+          "chance": 0.3
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_leaf"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": "4",
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_leaf",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_leaf",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "type": "minecraft:empty",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": {
+              "min": "5",
+              "max": "6"
+            },
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_leaf",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": "7",
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_leaf",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 1
+            },
+            {
+              "function": "minecraft:set_count",
+              "count": 1,
+              "add": true,
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.75
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_seeds",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "moriisexpansions:cannabis_plant",
+              "properties": {
+                "age": "3"
+              }
+            },
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.05
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_seeds",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "moriisexpansions:cannabis_plant",
+              "properties": {
+                "age": "4"
+              }
+            },
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.25
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_seeds",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "moriisexpansions:cannabis_plant",
+              "properties": {
+                "age": {
+                  "min": "5",
+                  "max": "6"
+                }
+              }
+            }
+          ],
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            },
+            {
+              "function": "minecraft:set_count",
+              "count": 3,
+              "conditions": [
+                {
+                  "condition": "minecraft:random_chance",
+                  "chance": 0.25
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_seeds",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "moriisexpansions:cannabis_plant",
+              "properties": {
+                "age": "7"
+              }
+            },
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:cannabis_plant",
+          "properties": {
+            "age": "7",
+            "half": "lower"
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "moriisexpansions:cannabis_bud",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

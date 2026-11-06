@@ -50,16 +50,6 @@ public class MoriisExpansions {
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
-        //SUBSTITUTED BY A 'MORIIS EXPANSIONS' CREATIVE TAB
-//        if(event.getTabKey() == CreativeModeTabs.INGREDIENTS){
-//            event.accept(ModItems.CANNABIS_BUD);
-//            event.accept(ModItems.DRIED_CANNABIS_BUD);
-//            event.accept(ModItems.CANNABIS_SEEDS);
-//        }
-//        if(event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS){
-//            event.accept(ModBlocks.CANNABIS_BLOCK);
-//            event.accept(ModBlocks.DRIED_CANNABIS_BLOCK);
-//        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

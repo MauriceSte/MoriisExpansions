@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "age=0,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant0"
+    },
+    "age=1,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant1"
+    },
+    "age=2,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant2"
+    },
+    "age=3,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant3"
+    },
+    "age=4,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant4"
+    },
+    "age=5,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant5"
+    },
+    "age=6,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant6"
+    },
+    "age=7,half=lower": {
+      "model": "moriisexpansions:block/lower_cannabis_plant7"
+    },
+    "age=0,half=upper": {
+      "model": "moriisexpansions:block/lower_cannabis_plant0"
+    },
+    "age=1,half=upper": {
+      "model": "moriisexpansions:block/lower_cannabis_plant1"
+    },
+    "age=2,half=upper": {
+      "model": "moriisexpansions:block/lower_cannabis_plant2"
+    },
+    "age=3,half=upper": {
+      "model": "moriisexpansions:block/lower_cannabis_plant"
+    },
+    "age=4,half=upper": {
+      "model": "moriisexpansions:block/upper_cannabis_plant4"
+    },
+    "age=5,half=upper": {
+      "model": "moriisexpansions:block/upper_cannabis_plant5"
+    },
+    "age=6,half=upper": {
+      "model": "moriisexpansions:block/upper_cannabis_plant6"
+    },
+    "age=7,half=upper": {
+      "model": "moriisexpansions:block/upper_cannabis_plant7"
+    }
+  }
+}
