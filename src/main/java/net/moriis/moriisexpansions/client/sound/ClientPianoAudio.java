@@ -70,7 +70,7 @@ public final class ClientPianoAudio {
 
     private static final class PianoVoice extends AbstractTickableSoundInstance {
         PianoVoice(int note, int velocity, float notePitch, BlockPos pos) {
-            super(ModPianoSounds.NOTES.get(note / 12 - 2), SoundSource.RECORDS, RandomSource.create());
+            super(ModPianoSounds.NOTES.get(note / 12 - 2), SoundSource.BLOCKS, RandomSource.create());
             volume = Math.max(1, Math.min(127, velocity)) / 127.0F;
             pitch = notePitch;
             x = pos.getX() + 0.5;
