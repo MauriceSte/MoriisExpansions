@@ -1,83 +1,183 @@
 package net.moriis.moriisexpansions.network;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
-import net.moriis.moriisexpansions.block.custom.PianoBlock;
-import net.moriis.moriisexpansions.sound.ModPianoSounds;
 import net.moriis.moriisexpansions.MoriisExpansions;
-import net.neoforged.bus.api.SubscribeEvent;
+import net.moriis.moriisexpansions.block.custom.PianoBlock;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.Set;
+import java.util.UUID;
 
 @EventBusSubscriber(modid = MoriisExpansions.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class PianoNetworking {
-    private static final Logger LOGGER = LogUtils.getLogger();
-    // Only accessed by the main server thread. Weak keys avoid retaining disconnected players.
-    private static final Map<ServerPlayer, Rate> RATES = new WeakHashMap<>();
-
+    private static final Map<UUID, State> STATES = new HashMap<>();
     private PianoNetworking() {}
 
-    /** Compatibility with the previous package: registration is now automatic. */
-    @Deprecated
-    public static void register(IEventBus bus) {
-        // Do not add another listener: @EventBusSubscriber owns registration.
-    }
+    /** Automatic registration; retained for old constructor calls. */
+    @Deprecated public static void register(IEventBus bus) {}
 
     @SubscribeEvent
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        // NeoForge 1.21.1: main-thread handlers are the default.
-        event.registrar("1").playToServer(
-                PianoNotePayload.TYPE, PianoNotePayload.STREAM_CODEC,
+        // Wire format changed: old clients/servers must not decode these as v1 packets.
+        var registrar = event.registrar("3");
+        registrar.playToServer(PianoNotePayload.TYPE, PianoNotePayload.STREAM_CODEC,
                 PianoNetworking::handle);
-        LOGGER.info("Registered piano serverbound payload: {}", PianoNotePayload.TYPE.id());
+        registrar.playToClient(PianoSoundPayload.TYPE, PianoSoundPayload.STREAM_CODEC,
+                (data, context) -> ClientAccess.handle(data));
+        LogUtils.getLogger().info("Registered piano START/STOP payloads, protocol 3");
     }
 
     private static void handle(PianoNotePayload data, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
-        if (!player.isAlive() || player.isSpectator()) return;
-        if (data.note() < 24 || data.note() > 108) return;
-        if (data.velocity() < 1 || data.velocity() > 127) return;
-
-        ServerLevel level = player.serverLevel();
-        if (!level.hasChunkAt(data.pos())) return;
-        if (player.distanceToSqr(Vec3.atCenterOf(data.pos())) > 64.0) return;
-        if (!(level.getBlockState(data.pos()).getBlock() instanceof PianoBlock)) return;
-
-        long tick = level.getGameTime();
-        Rate rate = RATES.computeIfAbsent(player, ignored -> new Rate());
-        if (rate.tick != tick) {
-            rate.tick = tick;
-            rate.notes = 0;
+        UUID owner = player.getUUID();
+        State state = STATES.get(owner);
+        // Release messages remain valid after walking away: never strand a listener's voice.
+        if (data.action() == PianoNotePayload.STOP) {
+            if (state != null) stop(player.getServer(), owner, state, data.voice(), false);
+            return;
         }
-        // Allow chords and fast playing; bound work from invalid/flooding clients.
-        if (++rate.notes > 32) return;
-
-        int octave = data.note() / 12 - 1;
-        int semitone = data.note() % 12;
-        float pitch = (float) Math.pow(2.0, semitone / 12.0);
-        float volume = data.velocity() / 127.0F;
-
-        // null means that the playing player also receives the sound.
-        // Position is the piano, not the player's position. No extra local playback.
-        level.playSound(null,
-                data.pos().getX() + 0.5,
-                data.pos().getY() + 0.5,
-                data.pos().getZ() + 0.5,
-                ModPianoSounds.NOTES.get(octave - 1),
-                SoundSource.RECORDS, volume, pitch);
+        if (data.action() == PianoNotePayload.ALL_OFF) {
+            if (state != null) stopAll(player.getServer(), owner, state);
+            return;
+        }
+        if (data.action() != PianoNotePayload.START || data.voice() <= 0) return;
+        ServerLevel level = player.serverLevel();
+        if (!player.isAlive() || player.isSpectator() || data.note() < 24 || data.note() > 108
+                || data.velocity() < 1 || data.velocity() > 127
+                || !validPiano(player, level, data.pos())) {
+            reject(player, data);
+            return;
+        }
+        if (state != null && state.level != level) {
+            stopAll(player.getServer(), owner, state);
+            STATES.remove(owner);
+            state = null;
+        }
+        if (state == null) {
+            state = new State(level);
+            STATES.put(owner, state);
+        }
+        long tick = level.getGameTime();
+        if (state.tick != tick) { state.tick = tick; state.starts = 0; }
+        if (++state.starts > 128 || state.voices.containsKey(data.voice())) {
+            reject(player, data);
+            return;
+        }
+        if (state.voices.size() >= 256) {
+            stop(player.getServer(), owner, state, state.voices.keySet().iterator().next(), true);
+        }
+        Set<UUID> listeners = new HashSet<>();
+        PianoSoundPayload sound = new PianoSoundPayload(owner, data.pos(),
+                PianoNotePayload.START, data.voice(), data.note(), data.velocity());
+        for (ServerPlayer listener : level.players()) {
+            // Performer already plays locally. Do not echo it back.
+            if (listener == player || listener.distanceToSqr(Vec3.atCenterOf(data.pos())) > 4096.0) continue;
+            if (listener.connection.hasChannel(PianoSoundPayload.TYPE)) {
+                PacketDistributor.sendToPlayer(listener, sound);
+                listeners.add(listener.getUUID());
+            }
+        }
+        state.voices.put(data.voice(), new Voice(data.pos(), tick, Set.copyOf(listeners)));
     }
 
-    private static final class Rate {
-        private long tick = Long.MIN_VALUE;
-        private int notes;
+    private static boolean validPiano(ServerPlayer player, ServerLevel level, BlockPos pos) {
+        return level.hasChunkAt(pos) && player.distanceToSqr(Vec3.atCenterOf(pos)) <= 64.0
+                && level.getBlockState(pos).getBlock() instanceof PianoBlock;
+    }
+
+    private static void reject(ServerPlayer player, PianoNotePayload data) {
+        if (player.connection.hasChannel(PianoSoundPayload.TYPE)) {
+            PacketDistributor.sendToPlayer(player, new PianoSoundPayload(player.getUUID(),
+                    data.pos(), PianoNotePayload.STOP, data.voice(), 0, 0));
+        }
+    }
+
+    private static void stop(MinecraftServer server, UUID owner, State state,
+            int id, boolean includeOwner) {
+        Voice voice = state.voices.remove(id);
+        if (voice == null || server == null) return;
+        PianoSoundPayload packet = new PianoSoundPayload(owner, voice.pos(),
+                PianoNotePayload.STOP, id, 0, 0);
+        for (UUID uuid : voice.listeners()) {
+            // Send to original listeners even if they moved outside the 64-block radius.
+            send(server.getPlayerList().getPlayer(uuid), packet);
+        }
+        if (includeOwner) send(server.getPlayerList().getPlayer(owner), packet);
+    }
+
+    private static void send(ServerPlayer player, PianoSoundPayload packet) {
+        if (player != null && player.connection.hasChannel(PianoSoundPayload.TYPE)) {
+            PacketDistributor.sendToPlayer(player, packet);
+        }
+    }
+
+    private static void stopAll(MinecraftServer server, UUID owner, State state) {
+        for (int id : new ArrayList<>(state.voices.keySet())) stop(server, owner, state, id, true);
+    }
+
+    public static void tick(MinecraftServer server) {
+        if (server.getTickCount() % 20 != 0) return;
+        for (UUID uuid : new ArrayList<>(STATES.keySet())) {
+            State state = STATES.get(uuid);
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+            if (player == null || !player.isAlive() || player.isSpectator()
+                    || player.serverLevel() != state.level) {
+                stopAll(server, uuid, state);
+                STATES.remove(uuid);
+                continue;
+            }
+            for (int id : new ArrayList<>(state.voices.keySet())) {
+                Voice voice = state.voices.get(id);
+                // One-minute safety timeout; samples are one-shots, not infinite loops.
+                if (!validPiano(player, state.level, voice.pos())
+                        || state.level.getGameTime() - voice.started() > 1200) {
+                    stop(server, uuid, state, id, true);
+                }
+            }
+            if (state.voices.isEmpty()) STATES.remove(uuid);
+        }
+    }
+
+    public static void clear() { STATES.clear(); }
+
+    private record Voice(BlockPos pos, long started, Set<UUID> listeners) {}
+    private static final class State {
+        final ServerLevel level;
+        final Map<Integer, Voice> voices = new LinkedHashMap<>();
+        long tick = Long.MIN_VALUE;
+        int starts;
+        State(ServerLevel level) { this.level = level; }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static final class ClientAccess {
+        static void handle(PianoSoundPayload data) {
+            var client = net.minecraft.client.Minecraft.getInstance();
+            if (data.action() == PianoNotePayload.START) {
+                // Also defend against accidental echo of the predicted voice.
+                if (client.player != null && client.player.getUUID().equals(data.player())) return;
+                net.moriis.moriisexpansions.client.sound.ClientPianoAudio.start(
+                        data.player(), data.voice(), data.pos(), data.note(), data.velocity());
+            } else if (data.action() == PianoNotePayload.STOP) {
+                net.moriis.moriisexpansions.client.sound.ClientPianoAudio.stop(data.player(), data.voice());
+            }
+        }
     }
 }

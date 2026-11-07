@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -13,13 +15,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.moriis.moriisexpansions.block.custom.PianoBlock;
 import net.moriis.moriisexpansions.client.midi.MidiInput;
+import net.moriis.moriisexpansions.client.midi.PianoPerformance;
+import net.moriis.moriisexpansions.client.sound.ClientPianoAudio;
 import net.moriis.moriisexpansions.network.PianoNotePayload;
+import net.moriis.moriisexpansions.network.PianoSoundPayload;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 import javax.sound.midi.ShortMessage;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.UUID;
 import java.util.List;
 
 public class PianoScreen extends Screen {
@@ -33,7 +38,8 @@ public class PianoScreen extends Screen {
 
     private final BlockPos pianoPos;
     private final MidiInput midi = new MidiInput();
-    private final boolean[][] held = new boolean[16][128];
+    private final PianoPerformance performance;
+    private final UUID performer;
     private final List<PianoKey> whites = new ArrayList<>();
     private final List<PianoKey> blacks = new ArrayList<>();
     private final MidiInput.Port off = new MidiInput.Port("", null);
@@ -64,6 +70,15 @@ public class PianoScreen extends Screen {
     public PianoScreen(BlockPos pianoPos) {
         super(tr("title"));
         this.pianoPos = pianoPos.immutable();
+        var player = Minecraft.getInstance().player;
+        this.performer = player == null ? new UUID(0, 0) : player.getUUID();
+        this.performance = new PianoPerformance(ClientPianoAudio::nextVoice,
+                new PianoPerformance.Output() {
+                    @Override public void start(int voice, int note, int velocity) {
+                        startVoice(voice, note, velocity);
+                    }
+                    @Override public void stop(int voice) { stopVoice(voice); }
+                });
     }
 
     private static Component tr(String key, Object... args) {
@@ -73,6 +88,7 @@ public class PianoScreen extends Screen {
     @Override
     protected void init() {
         if (ports == null) scanPorts();
+        if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
         whites.clear();
         blacks.clear();
         mouseCaptured = false;
@@ -81,12 +97,12 @@ public class PianoScreen extends Screen {
         int whiteWidth = Math.max(2, Math.min(20, (width - 32) / WHITE_KEYS));
         keyboardWidth = whiteWidth * WHITE_KEYS;
         panelWidth = keyboardWidth + 16;
-        panelHeight = Math.min(272, height - 16);
+        panelHeight = Math.min(302, height - 16);
         panelX = (width - panelWidth) / 2;
         panelY = (height - panelHeight) / 2;
         keyboardX = panelX + 8;
-        keyboardY = panelY + 104;
-        keyHeight = Math.max(24, Math.min(110, panelHeight - 148));
+        keyboardY = panelY + 126;
+        keyHeight = Math.max(24, Math.min(110, panelHeight - 170));
 
         int blackWidth = Math.max(2, (int) (whiteWidth * 0.62));
         int blackHeight = (int) (keyHeight * 0.62);
@@ -115,6 +131,14 @@ public class PianoScreen extends Screen {
             scanPorts();
             rebuildWidgets();
         }).bounds(keyboardX + keyboardWidth - 88, panelY + 27, 88, 20).build());
+
+        addRenderableWidget(Checkbox.builder(tr("let_ring"), font)
+                .pos(keyboardX, panelY + 101)
+                .maxWidth(keyboardWidth)
+                .selected(performance.letRing())
+                .tooltip(Tooltip.create(tr("let_ring_help")))
+                .onValueChange((checkbox, checked) -> performance.setLetRing(checked))
+                .build());
 
         int sliderWidth = Math.min(260, keyboardWidth);
         addRenderableWidget(new TransposeSlider((width - sliderWidth) / 2,
@@ -173,7 +197,7 @@ public class PianoScreen extends Screen {
         ++midiGeneration;
         midi.close();
         selected = off;
-        for (boolean[] channel : held) Arrays.fill(channel, false);
+        performance.disconnectMidi();
         midiMessages = 0;
         midiMonitor = tr("midi_waiting");
         status = tr("midi_off");
@@ -187,12 +211,16 @@ public class PianoScreen extends Screen {
         ++midiMessages;
         if (message.command() == ShortMessage.CONTROL_CHANGE) {
             midiMonitor = tr("midi_control", channel + 1, note, message.data2(), midiMessages);
-            // All Sound Off / All Notes Off: reset visual state of this channel.
-            if (note == 120 || note == 123) Arrays.fill(held[channel], false);
+            switch (note) {
+                case 64 -> performance.pedal(channel, message.data2() >= 64);
+                case 120 -> performance.allSoundOff(channel);
+                case 121 -> performance.pedal(channel, false);
+                case 123 -> performance.allNotesOff(channel);
+                default -> { }
+            }
             return;
         }
         boolean down = message.command() == ShortMessage.NOTE_ON && message.data2() > 0;
-        held[channel][note] = down;
         midiMonitor = tr("midi_received", down ? tr("note_on") : tr("note_off"),
                 noteName(note), note, channel + 1, message.data2(), midiMessages);
         // Do not silently discard controllers with a different base octave.
@@ -200,39 +228,52 @@ public class PianoScreen extends Screen {
             midiMonitor = tr("midi_out_of_range", noteName(note), note);
             return;
         }
-        if (down) sendNote(note, message.data2());
+        if (down) performance.noteOn(channel, note, transpose, message.data2());
+        else performance.noteOff(channel, note);
     }
 
-    private void sendNote(int note, int velocity) {
-        if (minecraft == null || minecraft.getConnection() == null) return;
-        // Never submit an unregistered/unnegotiated payload to PacketDistributor.
-        if (!minecraft.getConnection().hasChannel(PianoNotePayload.TYPE)) {
+    private void startVoice(int voice, int note, int velocity) {
+        if (!networkReady()) {
             networkError = tr("network_missing");
-            if (!loggedNetworkError) {
-                LOGGER.error("Piano channel {} is not available. Install the updated mod on both sides and restart.",
-                        PianoNotePayload.TYPE.id());
-                loggedNetworkError = true;
-            }
             return;
+        }
+        // Immediate local prediction: no server tick or network round trip before sound.
+        ClientPianoAudio.start(performer, voice, pianoPos, note, velocity);
+        if (!sendAction(PianoNotePayload.START, voice, note, velocity)) {
+            ClientPianoAudio.stop(performer, voice);
+        }
+    }
+
+    private void stopVoice(int voice) {
+        ClientPianoAudio.stop(performer, voice);
+        sendAction(PianoNotePayload.STOP, voice, 0, 0);
+    }
+
+    private boolean sendAction(int action, int voice, int note, int velocity) {
+        if (!networkReady()) {
+            networkError = tr("network_missing");
+            return false;
         }
         try {
             PacketDistributor.sendToServer(new PianoNotePayload(
-                    pianoPos, note + transpose, Mth.clamp(velocity, 1, 127)));
+                    pianoPos, action, voice, note, velocity));
             networkError = null;
             loggedNetworkError = false;
+            return true;
         } catch (RuntimeException failure) {
-            // Keep MIDI and the screen alive even if a connection changes during sending.
             networkError = tr("network_error", errorText(failure));
             if (!loggedNetworkError) {
-                LOGGER.error("Could not send piano note", failure);
+                LOGGER.error("Could not send piano voice action", failure);
                 loggedNetworkError = true;
             }
+            return false;
         }
     }
 
     private boolean networkReady() {
         return minecraft != null && minecraft.getConnection() != null
-                && minecraft.getConnection().hasChannel(PianoNotePayload.TYPE);
+                && minecraft.getConnection().hasChannel(PianoNotePayload.TYPE)
+                && minecraft.getConnection().hasChannel(PianoSoundPayload.TYPE);
     }
 
     @Override
@@ -244,6 +285,7 @@ public class PianoScreen extends Screen {
             onClose();
             return;
         }
+        performance.discardFinished(id -> ClientPianoAudio.isAlive(performer, id));
         if (selected.info() != null && !midi.isOpen()) {
             disconnectMidi();
             status = tr("disconnected");
@@ -270,9 +312,7 @@ public class PianoScreen extends Screen {
     }
 
     private boolean isHeld(int note) {
-        if (mouseNote == note) return true;
-        for (boolean[] channel : held) if (channel[note]) return true;
-        return false;
+        return performance.isHeld(note);
     }
 
     @Override
@@ -282,7 +322,7 @@ public class PianoScreen extends Screen {
             if (key != null) {
                 mouseCaptured = true;
                 mouseNote = key.note();
-                sendNote(mouseNote, 100);
+                performance.noteOn(PianoPerformance.MOUSE_CHANNEL, mouseNote, transpose, 100);
                 return true;
             }
         }
@@ -295,8 +335,9 @@ public class PianoScreen extends Screen {
             PianoKey key = findKey(x, y);
             int next = key == null ? -1 : key.note();
             if (next != mouseNote) {
+                if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
                 mouseNote = next;
-                if (next >= 0) sendNote(next, 100);
+                if (next >= 0) performance.noteOn(PianoPerformance.MOUSE_CHANNEL, next, transpose, 100);
             }
             return true;
         }
@@ -306,6 +347,7 @@ public class PianoScreen extends Screen {
     @Override
     public boolean mouseReleased(double x, double y, int button) {
         if (button == 0 && mouseCaptured) {
+            if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
             mouseCaptured = false;
             mouseNote = -1;
             return true;
@@ -331,7 +373,8 @@ public class PianoScreen extends Screen {
         drawStatusLine(graphics, net, panelY + 63,
                 networkReady() && networkError == null ? 0xFF91D8AD : 0xFFFF8888);
         drawStatusLine(graphics, midiMonitor, panelY + 75, 0xFFE3C991);
-        drawStatusLine(graphics, tr("range"), panelY + 87, 0xFFABB4C8);
+        drawStatusLine(graphics, tr("pedal_status", performance.pedalDown()
+                ? tr("pedal_down") : tr("pedal_up")), panelY + 87, 0xFFABB4C8);
 
         PianoKey hovered = findKey(mouseX, mouseY);
         for (PianoKey key : whites) drawKey(graphics, key, hovered);
@@ -378,6 +421,7 @@ public class PianoScreen extends Screen {
     public void removed() {
         active = false;
         disconnectMidi();
+        performance.stopAll();
         mouseNote = -1;
         mouseCaptured = false;
         super.removed();

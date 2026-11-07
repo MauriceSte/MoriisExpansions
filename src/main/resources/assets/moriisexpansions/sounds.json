@@ -4,7 +4,8 @@
       {
         "name": "moriisexpansions:piano/c1",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -13,7 +14,8 @@
       {
         "name": "moriisexpansions:piano/c2",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -22,7 +24,8 @@
       {
         "name": "moriisexpansions:piano/c3",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -31,7 +34,8 @@
       {
         "name": "moriisexpansions:piano/c4",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -40,7 +44,8 @@
       {
         "name": "moriisexpansions:piano/c5",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -49,7 +54,8 @@
       {
         "name": "moriisexpansions:piano/c6",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -58,7 +64,8 @@
       {
         "name": "moriisexpansions:piano/c7",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   },
@@ -67,7 +74,8 @@
       {
         "name": "moriisexpansions:piano/c8",
         "attenuation_distance": 64,
-        "stream": false
+        "stream": false,
+        "preload": true
       }
     ]
   }

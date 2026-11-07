@@ -7,18 +7,24 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.moriis.moriisexpansions.MoriisExpansions;
 
-public record PianoNotePayload(BlockPos pos, int note, int velocity)
+public record PianoNotePayload(BlockPos pos, int action, int voice, int note, int velocity)
         implements CustomPacketPayload {
+    public static final int START = 0;
+    public static final int STOP = 1;
+    public static final int ALL_OFF = 2;
+
     public static final Type<PianoNotePayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID, "piano_note"));
 
     public static final StreamCodec<FriendlyByteBuf, PianoNotePayload> STREAM_CODEC =
             StreamCodec.of((buf, data) -> {
                 buf.writeBlockPos(data.pos());
+                buf.writeVarInt(data.action());
+                buf.writeVarInt(data.voice());
                 buf.writeVarInt(data.note());
                 buf.writeVarInt(data.velocity());
             }, buf -> new PianoNotePayload(
-                    buf.readBlockPos(), buf.readVarInt(), buf.readVarInt()));
+                    buf.readBlockPos(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt()));
 
     @Override
     public Type<PianoNotePayload> type() {
