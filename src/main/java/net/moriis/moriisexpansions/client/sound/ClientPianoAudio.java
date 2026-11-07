@@ -17,6 +17,9 @@ public final class ClientPianoAudio {
     private record Playing(PianoVoice sound, long started) {}
     private static final Map<Key, Playing> PLAYING = new HashMap<>();
     private static int nextId;
+    private static final long CLOCK_ORIGIN = System.nanoTime();
+
+    public static long timeMicros() { return (System.nanoTime() - CLOCK_ORIGIN) / 1000L; }
 
     private ClientPianoAudio() {}
 

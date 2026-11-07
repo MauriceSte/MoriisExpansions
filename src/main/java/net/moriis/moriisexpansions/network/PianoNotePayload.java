@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.moriis.moriisexpansions.MoriisExpansions;
 
-public record PianoNotePayload(BlockPos pos, int action, int voice, int note, int velocity)
+public record PianoNotePayload(BlockPos pos, int action, int voice, int note, int velocity, long timeMicros)
         implements CustomPacketPayload {
     public static final int START = 0;
     public static final int STOP = 1;
@@ -23,8 +23,9 @@ public record PianoNotePayload(BlockPos pos, int action, int voice, int note, in
                 buf.writeVarInt(data.voice());
                 buf.writeVarInt(data.note());
                 buf.writeVarInt(data.velocity());
+                buf.writeLong(data.timeMicros());
             }, buf -> new PianoNotePayload(
-                    buf.readBlockPos(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt()));
+                    buf.readBlockPos(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readLong()));
 
     @Override
     public Type<PianoNotePayload> type() {

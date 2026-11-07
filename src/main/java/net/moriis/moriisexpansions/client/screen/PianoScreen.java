@@ -238,25 +238,27 @@ public class PianoScreen extends Screen {
             return;
         }
         // Immediate local prediction: no server tick or network round trip before sound.
+        long timeMicros = ClientPianoAudio.timeMicros();
         ClientPianoAudio.start(performer, voice, pianoPos, note, velocity);
-        if (!sendAction(PianoNotePayload.START, voice, note, velocity)) {
+        if (!sendAction(PianoNotePayload.START, voice, note, velocity, timeMicros)) {
             ClientPianoAudio.stop(performer, voice);
         }
     }
 
     private void stopVoice(int voice) {
+        long timeMicros = ClientPianoAudio.timeMicros();
         ClientPianoAudio.stop(performer, voice);
-        sendAction(PianoNotePayload.STOP, voice, 0, 0);
+        sendAction(PianoNotePayload.STOP, voice, 0, 0, timeMicros);
     }
 
-    private boolean sendAction(int action, int voice, int note, int velocity) {
+    private boolean sendAction(int action, int voice, int note, int velocity, long timeMicros) {
         if (!networkReady()) {
             networkError = tr("network_missing");
             return false;
         }
         try {
             PacketDistributor.sendToServer(new PianoNotePayload(
-                    pianoPos, action, voice, note, velocity));
+                    pianoPos, action, voice, note, velocity, timeMicros));
             networkError = null;
             loggedNetworkError = false;
             return true;

@@ -36,12 +36,12 @@ public final class PianoNetworking {
     @SubscribeEvent
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         // Wire format changed: old clients/servers must not decode these as v1 packets.
-        var registrar = event.registrar("3");
+        var registrar = event.registrar("4");
         registrar.playToServer(PianoNotePayload.TYPE, PianoNotePayload.STREAM_CODEC,
                 PianoNetworking::handle);
         registrar.playToClient(PianoSoundPayload.TYPE, PianoSoundPayload.STREAM_CODEC,
                 (data, context) -> ClientAccess.handle(data));
-        LogUtils.getLogger().info("Registered piano START/STOP payloads, protocol 3");
+        LogUtils.getLogger().info("Registered piano START/STOP payloads, protocol 4");
     }
 
     private static void handle(PianoNotePayload data, IPayloadContext context) {
@@ -50,7 +50,9 @@ public final class PianoNetworking {
         State state = STATES.get(owner);
         // Release messages remain valid after walking away: never strand a listener's voice.
         if (data.action() == PianoNotePayload.STOP) {
-            if (state != null) stop(player.getServer(), owner, state, data.voice(), false);
+            if (state != null && data.timeMicros() >= 0) {
+                stop(player.getServer(), owner, state, data.voice(), false, data.timeMicros());
+            }
             return;
         }
         if (data.action() == PianoNotePayload.ALL_OFF) {
@@ -61,6 +63,7 @@ public final class PianoNetworking {
         ServerLevel level = player.serverLevel();
         if (!player.isAlive() || player.isSpectator() || data.note() < 24 || data.note() > 108
                 || data.velocity() < 1 || data.velocity() > 127
+                || data.timeMicros() < 0 || data.timeMicros() > Long.MAX_VALUE - 60_000_000L
                 || !validPiano(player, level, data.pos())) {
             reject(player, data);
             return;
@@ -85,7 +88,7 @@ public final class PianoNetworking {
         }
         Set<UUID> listeners = new HashSet<>();
         PianoSoundPayload sound = new PianoSoundPayload(owner, data.pos(),
-                PianoNotePayload.START, data.voice(), data.note(), data.velocity());
+                PianoNotePayload.START, data.voice(), data.note(), data.velocity(), data.timeMicros());
         for (ServerPlayer listener : level.players()) {
             // Performer already plays locally. Do not echo it back.
             if (listener == player || listener.distanceToSqr(Vec3.atCenterOf(data.pos())) > 4096.0) continue;
@@ -94,7 +97,7 @@ public final class PianoNetworking {
                 listeners.add(listener.getUUID());
             }
         }
-        state.voices.put(data.voice(), new Voice(data.pos(), tick, Set.copyOf(listeners)));
+        state.voices.put(data.voice(), new Voice(data.pos(), tick, data.timeMicros(), Set.copyOf(listeners)));
     }
 
     private static boolean validPiano(ServerPlayer player, ServerLevel level, BlockPos pos) {
@@ -105,16 +108,24 @@ public final class PianoNetworking {
     private static void reject(ServerPlayer player, PianoNotePayload data) {
         if (player.connection.hasChannel(PianoSoundPayload.TYPE)) {
             PacketDistributor.sendToPlayer(player, new PianoSoundPayload(player.getUUID(),
-                    data.pos(), PianoNotePayload.STOP, data.voice(), 0, 0));
+                    data.pos(), PianoNotePayload.STOP, data.voice(), 0, 0, -1));
         }
     }
 
     private static void stop(MinecraftServer server, UUID owner, State state,
             int id, boolean includeOwner) {
+        stop(server, owner, state, id, includeOwner, -1);
+    }
+
+    private static void stop(MinecraftServer server, UUID owner, State state,
+            int id, boolean includeOwner, long sourceStopMicros) {
         Voice voice = state.voices.remove(id);
         if (voice == null || server == null) return;
+        // Preserve performer timing; cleanup/rejection uses -1 for immediate cancellation.
+        long timeMicros = sourceStopMicros < 0 ? -1 : voice.sourceStartMicros()
+                + Math.max(0L, Math.min(60_000_000L, sourceStopMicros - voice.sourceStartMicros()));
         PianoSoundPayload packet = new PianoSoundPayload(owner, voice.pos(),
-                PianoNotePayload.STOP, id, 0, 0);
+                PianoNotePayload.STOP, id, 0, 0, timeMicros);
         for (UUID uuid : voice.listeners()) {
             // Send to original listeners even if they moved outside the 64-block radius.
             send(server.getPlayerList().getPlayer(uuid), packet);
@@ -157,7 +168,7 @@ public final class PianoNetworking {
 
     public static void clear() { STATES.clear(); }
 
-    private record Voice(BlockPos pos, long started, Set<UUID> listeners) {}
+    private record Voice(BlockPos pos, long started, long sourceStartMicros, Set<UUID> listeners) {}
     private static final class State {
         final ServerLevel level;
         final Map<Integer, Voice> voices = new LinkedHashMap<>();
@@ -170,14 +181,14 @@ public final class PianoNetworking {
     private static final class ClientAccess {
         static void handle(PianoSoundPayload data) {
             var client = net.minecraft.client.Minecraft.getInstance();
-            if (data.action() == PianoNotePayload.START) {
-                // Also defend against accidental echo of the predicted voice.
-                if (client.player != null && client.player.getUUID().equals(data.player())) return;
-                net.moriis.moriisexpansions.client.sound.ClientPianoAudio.start(
-                        data.player(), data.voice(), data.pos(), data.note(), data.velocity());
-            } else if (data.action() == PianoNotePayload.STOP) {
-                net.moriis.moriisexpansions.client.sound.ClientPianoAudio.stop(data.player(), data.voice());
+            if (client.player != null && client.player.getUUID().equals(data.player())) {
+                // The performer is predicted locally. Only server cancellation comes back.
+                if (data.action() == PianoNotePayload.STOP) {
+                    net.moriis.moriisexpansions.client.sound.ClientPianoAudio.stop(data.player(), data.voice());
+                }
+                return;
             }
+            net.moriis.moriisexpansions.client.sound.RemotePianoPlayback.receive(data);
         }
     }
 }
