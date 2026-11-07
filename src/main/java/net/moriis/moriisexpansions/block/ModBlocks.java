@@ -10,6 +10,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.moriis.moriisexpansions.MoriisExpansions;
 import net.moriis.moriisexpansions.block.custom.CannabisCropBlock;
+import net.moriis.moriisexpansions.block.custom.PianoBlock;
 import net.moriis.moriisexpansions.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -38,10 +39,19 @@ public class ModBlocks {
 
     public static final DeferredBlock<CannabisCropBlock> CROP =
             BLOCKS.register("cannabis_plant",
-                    () -> new CannabisCropBlock( 
+                    () -> new CannabisCropBlock(
                             BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT),
                             ModItems.CANNABIS_SEEDS
                     ));
+    public static final DeferredBlock<PianoBlock> PIANO =
+            registerBlock(
+                    "piano",
+                    () -> new PianoBlock(
+                            BlockBehaviour.Properties.of()
+                                    .strength(2.0F)
+                                    .sound(SoundType.WOOD)
+                    )
+            );
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

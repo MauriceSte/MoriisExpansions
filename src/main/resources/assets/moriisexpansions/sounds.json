@@ -1,0 +1,74 @@
+{
+  "piano_c1": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c1",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c2": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c2",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c3": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c3",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c4": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c4",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c5": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c5",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c6": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c6",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c7": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c7",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  },
+  "piano_c8": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:piano/c8",
+        "attenuation_distance": 64,
+        "stream": false
+      }
+    ]
+  }
+}
