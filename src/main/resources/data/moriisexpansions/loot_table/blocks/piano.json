@@ -3,15 +3,22 @@
   "pools": [
     {
       "rolls": 1,
+      "conditions": [
+        {
+          "condition": "minecraft:block_state_property",
+          "block": "moriisexpansions:piano",
+          "properties": {
+            "half": "lower"
+          }
+        },
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "moriisexpansions:piano"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

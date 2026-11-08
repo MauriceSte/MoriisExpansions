@@ -1,7 +1,132 @@
 {
   "variants": {
-    "": {
-      "model": "moriisexpansions:block/piano"
+    "facing=south,half=lower,left=false,right=false": {
+      "model": "moriisexpansions:block/lower_single_organ",
+      "y": 0
+    },
+    "facing=south,half=lower,left=false,right=true": {
+      "model": "moriisexpansions:block/lower_left_organ",
+      "y": 0
+    },
+    "facing=south,half=lower,left=true,right=false": {
+      "model": "moriisexpansions:block/lower_right_organ",
+      "y": 0
+    },
+    "facing=south,half=lower,left=true,right=true": {
+      "model": "moriisexpansions:block/lower_middle_organ",
+      "y": 0
+    },
+    "facing=south,half=upper,left=false,right=false": {
+      "model": "moriisexpansions:block/upper_single_organ",
+      "y": 0
+    },
+    "facing=south,half=upper,left=false,right=true": {
+      "model": "moriisexpansions:block/upper_left_organ",
+      "y": 0
+    },
+    "facing=south,half=upper,left=true,right=false": {
+      "model": "moriisexpansions:block/upper_right_organ",
+      "y": 0
+    },
+    "facing=south,half=upper,left=true,right=true": {
+      "model": "moriisexpansions:block/upper_middle_organ",
+      "y": 0
+    },
+    "facing=west,half=lower,left=false,right=false": {
+      "model": "moriisexpansions:block/lower_single_organ",
+      "y": 90
+    },
+    "facing=west,half=lower,left=false,right=true": {
+      "model": "moriisexpansions:block/lower_left_organ",
+      "y": 90
+    },
+    "facing=west,half=lower,left=true,right=false": {
+      "model": "moriisexpansions:block/lower_right_organ",
+      "y": 90
+    },
+    "facing=west,half=lower,left=true,right=true": {
+      "model": "moriisexpansions:block/lower_middle_organ",
+      "y": 90
+    },
+    "facing=west,half=upper,left=false,right=false": {
+      "model": "moriisexpansions:block/upper_single_organ",
+      "y": 90
+    },
+    "facing=west,half=upper,left=false,right=true": {
+      "model": "moriisexpansions:block/upper_left_organ",
+      "y": 90
+    },
+    "facing=west,half=upper,left=true,right=false": {
+      "model": "moriisexpansions:block/upper_right_organ",
+      "y": 90
+    },
+    "facing=west,half=upper,left=true,right=true": {
+      "model": "moriisexpansions:block/upper_middle_organ",
+      "y": 90
+    },
+    "facing=north,half=lower,left=false,right=false": {
+      "model": "moriisexpansions:block/lower_single_organ",
+      "y": 180
+    },
+    "facing=north,half=lower,left=false,right=true": {
+      "model": "moriisexpansions:block/lower_left_organ",
+      "y": 180
+    },
+    "facing=north,half=lower,left=true,right=false": {
+      "model": "moriisexpansions:block/lower_right_organ",
+      "y": 180
+    },
+    "facing=north,half=lower,left=true,right=true": {
+      "model": "moriisexpansions:block/lower_middle_organ",
+      "y": 180
+    },
+    "facing=north,half=upper,left=false,right=false": {
+      "model": "moriisexpansions:block/upper_single_organ",
+      "y": 180
+    },
+    "facing=north,half=upper,left=false,right=true": {
+      "model": "moriisexpansions:block/upper_left_organ",
+      "y": 180
+    },
+    "facing=north,half=upper,left=true,right=false": {
+      "model": "moriisexpansions:block/upper_right_organ",
+      "y": 180
+    },
+    "facing=north,half=upper,left=true,right=true": {
+      "model": "moriisexpansions:block/upper_middle_organ",
+      "y": 180
+    },
+    "facing=east,half=lower,left=false,right=false": {
+      "model": "moriisexpansions:block/lower_single_organ",
+      "y": 270
+    },
+    "facing=east,half=lower,left=false,right=true": {
+      "model": "moriisexpansions:block/lower_left_organ",
+      "y": 270
+    },
+    "facing=east,half=lower,left=true,right=false": {
+      "model": "moriisexpansions:block/lower_right_organ",
+      "y": 270
+    },
+    "facing=east,half=lower,left=true,right=true": {
+      "model": "moriisexpansions:block/lower_middle_organ",
+      "y": 270
+    },
+    "facing=east,half=upper,left=false,right=false": {
+      "model": "moriisexpansions:block/upper_single_organ",
+      "y": 270
+    },
+    "facing=east,half=upper,left=false,right=true": {
+      "model": "moriisexpansions:block/upper_left_organ",
+      "y": 270
+    },
+    "facing=east,half=upper,left=true,right=false": {
+      "model": "moriisexpansions:block/upper_right_organ",
+      "y": 270
+    },
+    "facing=east,half=upper,left=true,right=true": {
+      "model": "moriisexpansions:block/upper_middle_organ",
+      "y": 270
     }
   }
 }

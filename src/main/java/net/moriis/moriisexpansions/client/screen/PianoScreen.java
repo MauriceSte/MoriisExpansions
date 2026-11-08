@@ -288,7 +288,7 @@ public class PianoScreen extends Screen {
         if (minecraft == null || minecraft.player == null || minecraft.level == null
                 || !minecraft.player.isAlive()
                 || minecraft.player.distanceToSqr(Vec3.atCenterOf(pianoPos)) > 64.0
-                || !(minecraft.level.getBlockState(pianoPos).getBlock() instanceof PianoBlock)) {
+                || !PianoBlock.isPlayableAnchor(minecraft.level, pianoPos)) {
             onClose();
             return;
         }

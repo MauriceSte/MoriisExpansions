@@ -108,7 +108,7 @@ public final class PianoNetworking {
 
     private static boolean validPiano(ServerPlayer player, ServerLevel level, BlockPos pos) {
         return level.hasChunkAt(pos) && player.distanceToSqr(Vec3.atCenterOf(pos)) <= 64.0
-                && level.getBlockState(pos).getBlock() instanceof PianoBlock;
+                && PianoBlock.isPlayableAnchor(level, pos);
     }
 
     private static void reject(ServerPlayer player, PianoNotePayload data) {

@@ -8,14 +8,11 @@
   "item.moriisexpansions.grinded_marijuana": "Grinded Marijuana",
   "item.moriisexpansions.kief": "Kief",
   "item.moriisexpansions.rolling_paper": "Rolling Paper",
-
   "block.moriisexpansions.cannabis_block": "Cannabis Block",
   "block.moriisexpansions.dried_cannabis_block": "Dried Cannabis Block",
   "block.moriisexpansions.cannabis_plant": "Cannabis Plant",
-  "block.moriisexpansions.piano": "Piano",
-
+  "block.moriisexpansions.piano": "Organ",
   "creativetab.moriisexpansions.mod_tab": "Moriis Expansions",
-
   "gui.moriisexpansions.piano.title": "Piano",
   "gui.moriisexpansions.piano.off": "Off",
   "gui.moriisexpansions.piano.midi": "MIDI device",
@@ -41,5 +38,7 @@
   "gui.moriisexpansions.piano.let_ring_help": "On: let samples finish after releasing a key. Off: key release stops the note unless the sustain pedal holds it.",
   "gui.moriisexpansions.piano.pedal_status": "Sustain pedal: %s · MIDI CC64",
   "gui.moriisexpansions.piano.pedal_down": "down",
-  "gui.moriisexpansions.piano.pedal_up": "up"
+  "gui.moriisexpansions.piano.pedal_up": "up",
+  "message.moriisexpansions.organ.incomplete": "An organ needs 3â€“4 complete sections facing the same direction.",
+  "message.moriisexpansions.organ.too_long": "An organ can be at most 4 sections wide."
 }
