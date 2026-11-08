@@ -8,11 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.moriis.moriisexpansions.MoriisExpansions;
 import java.util.UUID;
 
-public record PianoSoundPayload(UUID player, BlockPos pos, int action, int voice,
-        int note, int velocity, long timeMicros) implements CustomPacketPayload {
-    public static final Type<PianoSoundPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID, "piano_sound"));
-    public static final StreamCodec<FriendlyByteBuf, PianoSoundPayload> STREAM_CODEC =
+public record OrganSoundPayload(UUID player, BlockPos pos, int action, int voice,
+                                int note, int velocity, long timeMicros) implements CustomPacketPayload {
+    public static final Type<OrganSoundPayload> TYPE = new Type<>(
+            ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID, "organ_sound"));
+    public static final StreamCodec<FriendlyByteBuf, OrganSoundPayload> STREAM_CODEC =
             StreamCodec.of((buf, data) -> {
                 buf.writeUUID(data.player());
                 buf.writeBlockPos(data.pos());
@@ -21,7 +21,7 @@ public record PianoSoundPayload(UUID player, BlockPos pos, int action, int voice
                 buf.writeVarInt(data.note());
                 buf.writeVarInt(data.velocity());
                 buf.writeLong(data.timeMicros());
-            }, buf -> new PianoSoundPayload(buf.readUUID(), buf.readBlockPos(),
+            }, buf -> new OrganSoundPayload(buf.readUUID(), buf.readBlockPos(),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readLong()));
-    @Override public Type<PianoSoundPayload> type() { return TYPE; }
+    @Override public Type<OrganSoundPayload> type() { return TYPE; }
 }

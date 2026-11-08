@@ -2,8 +2,8 @@ package net.moriis.moriisexpansions.client.sound;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.moriis.moriisexpansions.network.PianoNotePayload;
-import net.moriis.moriisexpansions.network.PianoSoundPayload;
+import net.moriis.moriisexpansions.network.OrganNotePayload;
+import net.moriis.moriisexpansions.network.OrganSoundPayload;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /** Render-thread playout buffer for listeners, independent from local prediction. */
-public final class RemotePianoPlayback {
+public final class RemoteOrganPlayback {
     // Covers normal server-tick batching and moderate packet jitter; increase for unstable links.
     public static final long LISTENER_BUFFER_MILLIS = 150;
     private static final long BUFFER_NANOS = LISTENER_BUFFER_MILLIS * 1_000_000L;
@@ -31,26 +31,26 @@ public final class RemotePianoPlayback {
         }
     }
     private static final class Voice {
-        final PianoSoundPayload attack;
+        final OrganSoundPayload attack;
         final long deadline;
         boolean started;
         long actualStart;
         Long sourceRelease;
-        Voice(PianoSoundPayload attack, long deadline) {
+        Voice(OrganSoundPayload attack, long deadline) {
             this.attack = attack;
             this.deadline = deadline;
         }
     }
-    private RemotePianoPlayback() {}
+    private RemoteOrganPlayback() {}
 
-    public static void receive(PianoSoundPayload data) {
+    public static void receive(OrganSoundPayload data) {
         if (!checkWorld()) return;
         Key key = new Key(data.player(), data.voice());
-        if (data.action() == PianoNotePayload.STOP) {
+        if (data.action() == OrganNotePayload.STOP) {
             if (data.timeMicros() < 0) {
                 // Block removal, logout, timeout or rejection: cancel queued attacks too.
                 VOICES.remove(key);
-                ClientPianoAudio.stop(data.player(), data.voice());
+                ClientOrganAudio.stop(data.player(), data.voice());
             } else {
                 Voice voice = VOICES.get(key);
                 if (voice != null) voice.sourceRelease = data.timeMicros();
@@ -58,7 +58,7 @@ public final class RemotePianoPlayback {
             pump();
             return;
         }
-        if (data.action() != PianoNotePayload.START || data.timeMicros() < 0) return;
+        if (data.action() != OrganNotePayload.START || data.timeMicros() < 0) return;
         long now = System.nanoTime();
         Clock clock = CLOCKS.computeIfAbsent(data.player(), ignored -> new Clock(data.timeMicros(), now));
         clock.lastArrivalNanos = now;
@@ -81,15 +81,15 @@ public final class RemotePianoPlayback {
                 voice.started = true;
                 voice.actualStart = now;
                 var attack = voice.attack;
-                ClientPianoAudio.start(key.player(), key.voice(), attack.pos(), attack.note(), attack.velocity());
+                ClientOrganAudio.start(key.player(), key.voice(), attack.pos(), attack.note(), attack.velocity());
             }
             if (!voice.started) continue;
             if (voice.sourceRelease != null && now >= RemoteNoteTiming.releaseDeadline(
                     voice.actualStart, voice.attack.timeMicros(), voice.sourceRelease)) {
-                ClientPianoAudio.stop(key.player(), key.voice());
+                ClientOrganAudio.stop(key.player(), key.voice());
                 iterator.remove();
             } else if (now - voice.actualStart > 1_000_000_000L
-                    && !ClientPianoAudio.isAlive(key.player(), key.voice())) {
+                    && !ClientOrganAudio.isAlive(key.player(), key.voice())) {
                 // The recording finished naturally; a much later pedal-up need not resurrect it.
                 iterator.remove();
             }
@@ -108,7 +108,7 @@ public final class RemotePianoPlayback {
     }
 
     public static void clear() {
-        for (Key key : VOICES.keySet()) ClientPianoAudio.stop(key.player(), key.voice());
+        for (Key key : VOICES.keySet()) ClientOrganAudio.stop(key.player(), key.voice());
         VOICES.clear();
         CLOCKS.clear();
         world = null;

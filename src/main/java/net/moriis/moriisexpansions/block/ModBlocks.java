@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.moriis.moriisexpansions.MoriisExpansions;
 import net.moriis.moriisexpansions.block.custom.CannabisCropBlock;
-import net.moriis.moriisexpansions.block.custom.PianoBlock;
+import net.moriis.moriisexpansions.block.custom.OrganConsoleBlock;
 import net.moriis.moriisexpansions.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -43,10 +43,10 @@ public class ModBlocks {
                             BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT),
                             ModItems.CANNABIS_SEEDS
                     ));
-    public static final DeferredBlock<PianoBlock> PIANO =
+    public static final DeferredBlock<OrganConsoleBlock> ORGAN_CONSOLE =
             registerBlock(
-                    "piano",
-                    () -> new PianoBlock(
+                    "organ_console",
+                    () -> new OrganConsoleBlock(
                             BlockBehaviour.Properties.of()
                                     .strength(2.0F)
                                     .sound(SoundType.WOOD)

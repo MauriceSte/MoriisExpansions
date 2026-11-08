@@ -5,23 +5,23 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.moriis.moriisexpansions.sound.ModPianoSounds;
+import net.moriis.moriisexpansions.sound.ModOrganSounds;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 /** All methods run on the Minecraft client thread; never use a global stop by sound ID. */
-public final class ClientPianoAudio {
+public final class ClientOrganAudio {
     private record Key(UUID player, int voice) {}
-    private record Playing(PianoVoice sound, long started) {}
+    private record Playing(OrganVoice sound, long started) {}
     private static final Map<Key, Playing> PLAYING = new HashMap<>();
     private static int nextId;
     private static final long CLOCK_ORIGIN = System.nanoTime();
 
     public static long timeMicros() { return (System.nanoTime() - CLOCK_ORIGIN) / 1000L; }
 
-    private ClientPianoAudio() {}
+    private ClientOrganAudio() {}
 
     public static int nextVoice() {
         if (++nextId <= 0) nextId = 1;
@@ -33,7 +33,7 @@ public final class ClientPianoAudio {
         if (client.level == null || note < 24 || note > 108 || voice <= 0) return;
         stop(player, voice);
         float pitch = (float) Math.pow(2.0, (note % 12) / 12.0);
-        PianoVoice sound = new PianoVoice(note, velocity, pitch, pos);
+        OrganVoice sound = new OrganVoice(note, velocity, pitch, pos);
         PLAYING.put(new Key(player, voice), new Playing(sound, System.nanoTime()));
         client.getSoundManager().play(sound);
     }
@@ -68,9 +68,9 @@ public final class ClientPianoAudio {
         PLAYING.clear();
     }
 
-    private static final class PianoVoice extends AbstractTickableSoundInstance {
-        PianoVoice(int note, int velocity, float notePitch, BlockPos pos) {
-            super(ModPianoSounds.NOTES.get(note / 12 - 2), SoundSource.BLOCKS, RandomSource.create());
+    private static final class OrganVoice extends AbstractTickableSoundInstance {
+        OrganVoice(int note, int velocity, float notePitch, BlockPos pos) {
+            super(ModOrganSounds.NOTES.get(note / 12 - 2), SoundSource.BLOCKS, RandomSource.create());
             volume = Math.max(1, Math.min(127, velocity)) / 127.0F;
             pitch = notePitch;
             x = pos.getX() + 0.5;

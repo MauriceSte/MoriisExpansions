@@ -13,16 +13,16 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @EventBusSubscriber(modid = MoriisExpansions.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public final class ModPianoSounds {
+public final class ModOrganSounds {
     public static final float HEARING_DISTANCE = 64.0F;
 
     public static final List<SoundEvent> NOTES = IntStream.rangeClosed(1, 8)
             .mapToObj(octave -> SoundEvent.createFixedRangeEvent(
                     ResourceLocation.fromNamespaceAndPath(
-                            MoriisExpansions.MOD_ID, "piano_c" + octave),
+                            MoriisExpansions.MOD_ID, "organ_c" + octave),
                     HEARING_DISTANCE)).toList();
 
-    private ModPianoSounds() {}
+    private ModOrganSounds() {}
 
     /** Compatibility with the previous package; no manual registration is needed now. */
     @Deprecated
@@ -35,7 +35,7 @@ public final class ModPianoSounds {
         event.register(Registries.SOUND_EVENT, helper -> {
             for (int index = 0; index < NOTES.size(); index++) {
                 helper.register(ResourceLocation.fromNamespaceAndPath(
-                        MoriisExpansions.MOD_ID, "piano_c" + (index + 1)), NOTES.get(index));
+                        MoriisExpansions.MOD_ID, "organ_c" + (index + 1)), NOTES.get(index));
             }
         });
     }

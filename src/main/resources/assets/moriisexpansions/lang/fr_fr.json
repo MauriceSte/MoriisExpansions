@@ -1,5 +1,3 @@
 {
-  "block.moriisexpansions.piano": "Orgue",
-  "message.moriisexpansions.organ.incomplete": "Il faut 3 Ã  4 sections complÃ¨tes orientÃ©es dans le mÃªme sens.",
-  "message.moriisexpansions.organ.too_long": "Un orgue ne peut pas dÃ©passer 4 sections de large."
+  "block.moriisexpansions.organ": "Orgue"
 }

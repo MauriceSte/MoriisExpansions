@@ -1,10 +1,9 @@
 package net.moriis.moriisexpansions;
 
-import net.minecraft.world.item.CreativeModeTabs;
 import net.moriis.moriisexpansions.block.ModBlocks;
 import net.moriis.moriisexpansions.item.ModCreativeModeTabs;
 import net.moriis.moriisexpansions.item.ModItems;
-import net.moriis.moriisexpansions.sound.ModPianoSounds;
+import net.moriis.moriisexpansions.sound.ModOrganSounds;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -36,7 +35,7 @@ public class MoriisExpansions {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
-        ModPianoSounds.register(modEventBus);
+        ModOrganSounds.register(modEventBus);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);

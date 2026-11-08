@@ -7,7 +7,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 
 /** Client-main-thread note/pedal state, independent of Minecraft's sound classes. */
-public final class PianoPerformance {
+public final class OrganPerformance {
     public static final int MOUSE_CHANNEL = 16;
 
     public interface Output {
@@ -22,7 +22,7 @@ public final class PianoPerformance {
     private final boolean[] pedal = new boolean[16];
     private boolean letRing;
 
-    public PianoPerformance(IntSupplier ids, Output output) {
+    public OrganPerformance(IntSupplier ids, Output output) {
         this.ids = ids;
         this.output = output;
     }

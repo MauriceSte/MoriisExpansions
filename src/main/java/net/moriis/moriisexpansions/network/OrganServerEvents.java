@@ -7,9 +7,9 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @EventBusSubscriber(modid = MoriisExpansions.MOD_ID)
-public final class PianoServerEvents {
+public final class OrganServerEvents {
     @SubscribeEvent
-    public static void tick(ServerTickEvent.Post event) { PianoNetworking.tick(event.getServer()); }
+    public static void tick(ServerTickEvent.Post event) { OrganNetworking.tick(event.getServer()); }
     @SubscribeEvent
-    public static void stopped(ServerStoppedEvent event) { PianoNetworking.clear(); }
+    public static void stopped(ServerStoppedEvent event) { OrganNetworking.clear(); }
 }

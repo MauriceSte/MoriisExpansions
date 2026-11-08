@@ -13,12 +13,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.moriis.moriisexpansions.block.custom.PianoBlock;
+import net.moriis.moriisexpansions.block.custom.OrganConsoleBlock;
 import net.moriis.moriisexpansions.client.midi.MidiInput;
-import net.moriis.moriisexpansions.client.midi.PianoPerformance;
-import net.moriis.moriisexpansions.client.sound.ClientPianoAudio;
-import net.moriis.moriisexpansions.network.PianoNotePayload;
-import net.moriis.moriisexpansions.network.PianoSoundPayload;
+import net.moriis.moriisexpansions.client.midi.OrganPerformance;
+import net.moriis.moriisexpansions.client.sound.ClientOrganAudio;
+import net.moriis.moriisexpansions.network.OrganNotePayload;
+import net.moriis.moriisexpansions.network.OrganSoundPayload;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 import java.util.List;
 
-public class PianoScreen extends Screen {
+public class OrganScreen extends Screen {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final int FIRST_NOTE = 36;
     private static final int LAST_NOTE = 96;
@@ -36,12 +36,12 @@ public class PianoScreen extends Screen {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     };
 
-    private final BlockPos pianoPos;
+    private final BlockPos organPos;
     private final MidiInput midi = new MidiInput();
-    private final PianoPerformance performance;
+    private final OrganPerformance performance;
     private final UUID performer;
-    private final List<PianoKey> whites = new ArrayList<>();
-    private final List<PianoKey> blacks = new ArrayList<>();
+    private final List<OrganKey> whites = new ArrayList<>();
+    private final List<OrganKey> blacks = new ArrayList<>();
     private final MidiInput.Port off = new MidiInput.Port("", null);
 
     private List<MidiInput.Port> ports;
@@ -67,33 +67,33 @@ public class PianoScreen extends Screen {
     private int keyboardWidth;
     private int keyHeight;
 
-    public PianoScreen(BlockPos pianoPos) {
+    public OrganScreen(BlockPos organPos) {
         super(tr("title"));
-        this.pianoPos = pianoPos.immutable();
+        this.organPos = organPos.immutable();
         var player = Minecraft.getInstance().player;
         this.performer = player == null ? new UUID(0, 0) : player.getUUID();
-        this.performance = new PianoPerformance(ClientPianoAudio::nextVoice,
-                new PianoPerformance.Output() {
+        this.performance = new OrganPerformance(ClientOrganAudio::nextVoice,
+                new OrganPerformance.Output() {
                     @Override public void start(int voice, int note, int velocity) {
                         startVoice(voice, note, velocity);
                     }
                     @Override public void stop(int voice) { stopVoice(voice); }
                     @Override public void finished(int voice) {
                         // Same local cleanup as before; never damp a listener on natural completion.
-                        ClientPianoAudio.stop(performer, voice);
-                        sendAction(PianoNotePayload.FINISHED, voice, 0, 0, ClientPianoAudio.timeMicros());
+                        ClientOrganAudio.stop(performer, voice);
+                        sendAction(OrganNotePayload.FINISHED, voice, 0, 0, ClientOrganAudio.timeMicros());
                     }
                 });
     }
 
     private static Component tr(String key, Object... args) {
-        return Component.translatable("gui.moriisexpansions.piano." + key, args);
+        return Component.translatable("gui.moriisexpansions.organ." + key, args);
     }
 
     @Override
     protected void init() {
         if (ports == null) scanPorts();
-        if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
+        if (mouseNote >= 0) performance.noteOff(OrganPerformance.MOUSE_CHANNEL, mouseNote);
         whites.clear();
         blacks.clear();
         mouseCaptured = false;
@@ -114,11 +114,11 @@ public class PianoScreen extends Screen {
         int whiteIndex = 0;
         for (int note = FIRST_NOTE; note <= LAST_NOTE; note++) {
             if (isBlack(note)) {
-                blacks.add(new PianoKey(note,
+                blacks.add(new OrganKey(note,
                         keyboardX + whiteIndex * whiteWidth - blackWidth / 2,
                         keyboardY, blackWidth, blackHeight, true));
             } else {
-                whites.add(new PianoKey(note,
+                whites.add(new OrganKey(note,
                         keyboardX + whiteIndex++ * whiteWidth,
                         keyboardY, whiteWidth, keyHeight, false));
             }
@@ -243,17 +243,17 @@ public class PianoScreen extends Screen {
             return;
         }
         // Immediate local prediction: no server tick or network round trip before sound.
-        long timeMicros = ClientPianoAudio.timeMicros();
-        ClientPianoAudio.start(performer, voice, pianoPos, note, velocity);
-        if (!sendAction(PianoNotePayload.START, voice, note, velocity, timeMicros)) {
-            ClientPianoAudio.stop(performer, voice);
+        long timeMicros = ClientOrganAudio.timeMicros();
+        ClientOrganAudio.start(performer, voice, organPos, note, velocity);
+        if (!sendAction(OrganNotePayload.START, voice, note, velocity, timeMicros)) {
+            ClientOrganAudio.stop(performer, voice);
         }
     }
 
     private void stopVoice(int voice) {
-        long timeMicros = ClientPianoAudio.timeMicros();
-        ClientPianoAudio.stop(performer, voice);
-        sendAction(PianoNotePayload.STOP, voice, 0, 0, timeMicros);
+        long timeMicros = ClientOrganAudio.timeMicros();
+        ClientOrganAudio.stop(performer, voice);
+        sendAction(OrganNotePayload.STOP, voice, 0, 0, timeMicros);
     }
 
     private boolean sendAction(int action, int voice, int note, int velocity, long timeMicros) {
@@ -262,15 +262,15 @@ public class PianoScreen extends Screen {
             return false;
         }
         try {
-            PacketDistributor.sendToServer(new PianoNotePayload(
-                    pianoPos, action, voice, note, velocity, timeMicros));
+            PacketDistributor.sendToServer(new OrganNotePayload(
+                    organPos, action, voice, note, velocity, timeMicros));
             networkError = null;
             loggedNetworkError = false;
             return true;
         } catch (RuntimeException failure) {
             networkError = tr("network_error", errorText(failure));
             if (!loggedNetworkError) {
-                LOGGER.error("Could not send piano voice action", failure);
+                LOGGER.error("Could not send organ voice action", failure);
                 loggedNetworkError = true;
             }
             return false;
@@ -279,20 +279,20 @@ public class PianoScreen extends Screen {
 
     private boolean networkReady() {
         return minecraft != null && minecraft.getConnection() != null
-                && minecraft.getConnection().hasChannel(PianoNotePayload.TYPE)
-                && minecraft.getConnection().hasChannel(PianoSoundPayload.TYPE);
+                && minecraft.getConnection().hasChannel(OrganNotePayload.TYPE)
+                && minecraft.getConnection().hasChannel(OrganSoundPayload.TYPE);
     }
 
     @Override
     public void tick() {
         if (minecraft == null || minecraft.player == null || minecraft.level == null
                 || !minecraft.player.isAlive()
-                || minecraft.player.distanceToSqr(Vec3.atCenterOf(pianoPos)) > 64.0
-                || !PianoBlock.isPlayableAnchor(minecraft.level, pianoPos)) {
+                || minecraft.player.distanceToSqr(Vec3.atCenterOf(organPos)) > 64.0
+                || !OrganConsoleBlock.isPlayableAnchor(minecraft.level, organPos)) {
             onClose();
             return;
         }
-        performance.discardFinished(id -> ClientPianoAudio.isAlive(performer, id));
+        performance.discardFinished(id -> ClientOrganAudio.isAlive(performer, id));
         if (selected.info() != null && !midi.isOpen()) {
             disconnectMidi();
             status = tr("disconnected");
@@ -312,9 +312,9 @@ public class PianoScreen extends Screen {
         return NAMES[note % 12] + (note / 12 - 1);
     }
 
-    private PianoKey findKey(double x, double y) {
-        for (PianoKey key : blacks) if (key.contains(x, y)) return key;
-        for (PianoKey key : whites) if (key.contains(x, y)) return key;
+    private OrganKey findKey(double x, double y) {
+        for (OrganKey key : blacks) if (key.contains(x, y)) return key;
+        for (OrganKey key : whites) if (key.contains(x, y)) return key;
         return null;
     }
 
@@ -325,11 +325,11 @@ public class PianoScreen extends Screen {
     @Override
     public boolean mouseClicked(double x, double y, int button) {
         if (button == 0) {
-            PianoKey key = findKey(x, y);
+            OrganKey key = findKey(x, y);
             if (key != null) {
                 mouseCaptured = true;
                 mouseNote = key.note();
-                performance.noteOn(PianoPerformance.MOUSE_CHANNEL, mouseNote, transpose, 100);
+                performance.noteOn(OrganPerformance.MOUSE_CHANNEL, mouseNote, transpose, 100);
                 return true;
             }
         }
@@ -339,12 +339,12 @@ public class PianoScreen extends Screen {
     @Override
     public boolean mouseDragged(double x, double y, int button, double dx, double dy) {
         if (button == 0 && mouseCaptured) {
-            PianoKey key = findKey(x, y);
+            OrganKey key = findKey(x, y);
             int next = key == null ? -1 : key.note();
             if (next != mouseNote) {
-                if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
+                if (mouseNote >= 0) performance.noteOff(OrganPerformance.MOUSE_CHANNEL, mouseNote);
                 mouseNote = next;
-                if (next >= 0) performance.noteOn(PianoPerformance.MOUSE_CHANNEL, next, transpose, 100);
+                if (next >= 0) performance.noteOn(OrganPerformance.MOUSE_CHANNEL, next, transpose, 100);
             }
             return true;
         }
@@ -354,7 +354,7 @@ public class PianoScreen extends Screen {
     @Override
     public boolean mouseReleased(double x, double y, int button) {
         if (button == 0 && mouseCaptured) {
-            if (mouseNote >= 0) performance.noteOff(PianoPerformance.MOUSE_CHANNEL, mouseNote);
+            if (mouseNote >= 0) performance.noteOff(OrganPerformance.MOUSE_CHANNEL, mouseNote);
             mouseCaptured = false;
             mouseNote = -1;
             return true;
@@ -383,9 +383,9 @@ public class PianoScreen extends Screen {
         drawStatusLine(graphics, tr("pedal_status", performance.pedalDown()
                 ? tr("pedal_down") : tr("pedal_up")), panelY + 87, 0xFFABB4C8);
 
-        PianoKey hovered = findKey(mouseX, mouseY);
-        for (PianoKey key : whites) drawKey(graphics, key, hovered);
-        for (PianoKey key : blacks) drawKey(graphics, key, hovered);
+        OrganKey hovered = findKey(mouseX, mouseY);
+        for (OrganKey key : whites) drawKey(graphics, key, hovered);
+        for (OrganKey key : blacks) drawKey(graphics, key, hovered);
 
         super.render(graphics, mouseX, mouseY, partialTick);
         if (hovered != null) {
@@ -405,7 +405,7 @@ public class PianoScreen extends Screen {
                 keyboardX, y, color, false);
     }
 
-    private void drawKey(GuiGraphics graphics, PianoKey key, PianoKey hovered) {
+    private void drawKey(GuiGraphics graphics, OrganKey key, OrganKey hovered) {
         int color = isHeld(key.note()) ? 0xFFE1B65F
                 : key == hovered ? (key.black() ? 0xFF4C5970 : 0xFFD9E6F5)
                 : key.black() ? 0xFF10141D : 0xFFF3F0E8;
@@ -434,7 +434,7 @@ public class PianoScreen extends Screen {
         super.removed();
     }
 
-    private record PianoKey(int note, int x, int y, int width, int height, boolean black) {
+    private record OrganKey(int note, int x, int y, int width, int height, boolean black) {
         boolean contains(double mx, double my) {
             return mx >= x && mx < x + width && my >= y && my < y + height;
         }

@@ -19,16 +19,17 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.*;
+import net.moriis.moriisexpansions.client.screen.OrganScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public class PianoBlock extends Block {
+public class OrganConsoleBlock extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     public static final BooleanProperty LEFT = BooleanProperty.create("left");
     public static final BooleanProperty RIGHT = BooleanProperty.create("right");
 
-    public PianoBlock(BlockBehaviour.Properties properties) {
+    public OrganConsoleBlock(BlockBehaviour.Properties properties) {
         super(properties.noOcclusion().pushReaction(PushReaction.BLOCK));
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.SOUTH)
                 .setValue(HALF, DoubleBlockHalf.LOWER).setValue(LEFT, false).setValue(RIGHT, false));
@@ -111,7 +112,7 @@ public class PianoBlock extends Block {
     /** Left end of this straight row; null for incomplete or oversized structures. */
     public static BlockPos playableAnchor(BlockGetter level, BlockPos clicked) {
         BlockState state = level.getBlockState(clicked);
-        if (!(state.getBlock() instanceof PianoBlock)) return null;
+        if (!(state.getBlock() instanceof OrganConsoleBlock)) return null;
         BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.UPPER ? clicked.below() : clicked;
         Direction f = state.getValue(FACING);
         Block block = state.getBlock();
@@ -165,7 +166,7 @@ public class PianoBlock extends Block {
     private static final class ClientAccess {
         private static void open(BlockPos pos) {
             net.minecraft.client.Minecraft.getInstance().setScreen(
-                    new net.moriis.moriisexpansions.client.screen.PianoScreen(pos));
+                    new OrganScreen(pos));
         }
     }
 }

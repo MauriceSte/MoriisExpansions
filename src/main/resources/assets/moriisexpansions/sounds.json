@@ -1,78 +1,78 @@
 {
-  "piano_c1": {
+  "organ_c1": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c1",
+        "name": "moriisexpansions:organ/c1",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c2": {
+  "organ_c2": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c2",
+        "name": "moriisexpansions:organ/c2",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c3": {
+  "organ_c3": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c3",
+        "name": "moriisexpansions:organ/c3",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c4": {
+  "organ_c4": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c4",
+        "name": "moriisexpansions:organ/c4",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c5": {
+  "organ_c5": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c5",
+        "name": "moriisexpansions:organ/c5",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c6": {
+  "organ_c6": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c6",
+        "name": "moriisexpansions:organ/c6",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c7": {
+  "organ_c7": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c7",
+        "name": "moriisexpansions:organ/c7",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "piano_c8": {
+  "organ_c8": {
     "sounds": [
       {
-        "name": "moriisexpansions:piano/c8",
+        "name": "moriisexpansions:organ/c8",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true

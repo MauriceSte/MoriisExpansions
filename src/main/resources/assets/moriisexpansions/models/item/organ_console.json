@@ -2,7 +2,7 @@
   "credit": "Made with Blockbench",
   "textures": {
     "0": "moriisexpansions:block/organ_console",
-    "particle": "moriisexpansions:block/organ_console"
+    "particle": "minecraft:block/stripped_dark_oak_log"
   },
   "elements": [
     {

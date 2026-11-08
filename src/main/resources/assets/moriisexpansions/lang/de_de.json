@@ -1,5 +1,5 @@
 {
-  "block.moriisexpansions.piano": "Orgel",
-  "message.moriisexpansions.organ.incomplete": "FÃ¼r eine spielbare Orgel sind 3â€“4 vollstÃ¤ndige Teile mit gleicher Ausrichtung nÃ¶tig.",
-  "message.moriisexpansions.organ.too_long": "Eine Orgel darf hÃ¶chstens 4 Teile breit sein."
+  "block.moriisexpansions.organ_console": "Orgelkonsole",
+  "message.moriisexpansions.organ.incomplete": "Zum Spielen muss die Orgelkonsole 3-4 Blöcke lang sein.",
+  "message.moriisexpansions.organ.too_long": "Eine Orgelkonsole darf höchstens 4 Blöcke lang sein."
 }

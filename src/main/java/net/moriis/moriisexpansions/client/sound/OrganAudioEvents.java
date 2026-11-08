@@ -9,19 +9,19 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 
 @EventBusSubscriber(modid = MoriisExpansions.MOD_ID, value = Dist.CLIENT)
-public final class PianoAudioEvents {
+public final class OrganAudioEvents {
     @SubscribeEvent
     public static void tick(ClientTickEvent.Post event) {
-        ClientPianoAudio.tick();
-        RemotePianoPlayback.pump();
+        ClientOrganAudio.tick();
+        RemoteOrganPlayback.pump();
     }
 
     @SubscribeEvent
-    public static void frame(RenderFrameEvent.Pre event) { RemotePianoPlayback.pump(); }
+    public static void frame(RenderFrameEvent.Pre event) { RemoteOrganPlayback.pump(); }
 
     @SubscribeEvent
     public static void logout(ClientPlayerNetworkEvent.LoggingOut event) {
-        RemotePianoPlayback.clear();
-        ClientPianoAudio.clear();
+        RemoteOrganPlayback.clear();
+        ClientOrganAudio.clear();
     }
 }
