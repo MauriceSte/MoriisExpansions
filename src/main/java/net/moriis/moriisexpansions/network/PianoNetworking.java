@@ -36,18 +36,24 @@ public final class PianoNetworking {
     @SubscribeEvent
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         // Wire format changed: old clients/servers must not decode these as v1 packets.
-        var registrar = event.registrar("4");
+        var registrar = event.registrar("5");
         registrar.playToServer(PianoNotePayload.TYPE, PianoNotePayload.STREAM_CODEC,
                 PianoNetworking::handle);
         registrar.playToClient(PianoSoundPayload.TYPE, PianoSoundPayload.STREAM_CODEC,
                 (data, context) -> ClientAccess.handle(data));
-        LogUtils.getLogger().info("Registered piano START/STOP payloads, protocol 4");
+        LogUtils.getLogger().info("Registered piano START/STOP payloads, protocol 5");
     }
 
     private static void handle(PianoNotePayload data, IPayloadContext context) {
         if (!(context.player() instanceof ServerPlayer player)) return;
         UUID owner = player.getUUID();
         State state = STATES.get(owner);
+        // Natural local completion is bookkeeping, not a musical release.
+        // Listener samples finish independently on their own audio engine.
+        if (data.action() == PianoNotePayload.FINISHED) {
+            if (state != null) state.voices.remove(data.voice());
+            return;
+        }
         // Release messages remain valid after walking away: never strand a listener's voice.
         if (data.action() == PianoNotePayload.STOP) {
             if (state != null && data.timeMicros() >= 0) {

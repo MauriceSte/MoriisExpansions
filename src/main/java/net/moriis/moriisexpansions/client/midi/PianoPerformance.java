@@ -13,6 +13,7 @@ public final class PianoPerformance {
     public interface Output {
         void start(int voice, int note, int velocity);
         void stop(int voice);
+        default void finished(int voice) { stop(voice); }
     }
 
     private final IntSupplier ids;
@@ -106,7 +107,21 @@ public final class PianoPerformance {
 
     public void discardFinished(IntPredicate stillAlive) {
         for (int id : new ArrayList<>(voices.keySet())) {
-            if (!voices.get(id).down && !stillAlive.test(id)) stop(id);
+            Voice voice = voices.get(id);
+
+            if (voice.down) {
+                continue;
+            }
+
+            // Sustain weiterhin verwalten, selbst wenn das lokale
+            // Sample bereits beendet ist. Zuhörer können noch spielen.
+            if (letRing || pedalFor(voice.channel)) {
+                continue;
+            }
+
+            if (!stillAlive.test(id)) {
+                stop(id);
+            }
         }
     }
 

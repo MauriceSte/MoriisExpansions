@@ -12,6 +12,7 @@ public record PianoNotePayload(BlockPos pos, int action, int voice, int note, in
     public static final int START = 0;
     public static final int STOP = 1;
     public static final int ALL_OFF = 2;
+    public static final int FINISHED = 3;
 
     public static final Type<PianoNotePayload> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID, "piano_note"));

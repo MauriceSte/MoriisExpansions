@@ -78,6 +78,11 @@ public class PianoScreen extends Screen {
                         startVoice(voice, note, velocity);
                     }
                     @Override public void stop(int voice) { stopVoice(voice); }
+                    @Override public void finished(int voice) {
+                        // Same local cleanup as before; never damp a listener on natural completion.
+                        ClientPianoAudio.stop(performer, voice);
+                        sendAction(PianoNotePayload.FINISHED, voice, 0, 0, ClientPianoAudio.timeMicros());
+                    }
                 });
     }
 
