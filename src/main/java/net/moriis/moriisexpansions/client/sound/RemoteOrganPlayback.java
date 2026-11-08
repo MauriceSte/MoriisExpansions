@@ -81,7 +81,7 @@ public final class RemoteOrganPlayback {
                 voice.started = true;
                 voice.actualStart = now;
                 var attack = voice.attack;
-                ClientOrganAudio.start(key.player(), key.voice(), attack.pos(), attack.note(), attack.velocity());
+                ClientOrganAudio.start(key.player(), key.voice(), attack.pos(), attack.note(), attack.velocity(), attack.instrument());
             }
             if (!voice.started) continue;
             if (voice.sourceRelease != null && now >= RemoteNoteTiming.releaseDeadline(

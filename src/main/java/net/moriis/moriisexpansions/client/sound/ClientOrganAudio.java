@@ -29,11 +29,16 @@ public final class ClientOrganAudio {
     }
 
     public static void start(UUID player, int voice, BlockPos pos, int note, int velocity) {
+        start(player, voice, pos, note, velocity, 0);
+    }
+
+    public static void start(UUID player, int voice, BlockPos pos, int note, int velocity, int instrument) {
+        if (!net.moriis.moriisexpansions.sound.OrganInstrument.isValid(instrument)) return;
         Minecraft client = Minecraft.getInstance();
         if (client.level == null || note < 24 || note > 108 || voice <= 0) return;
         stop(player, voice);
         float pitch = (float) Math.pow(2.0, (note % 12) / 12.0);
-        OrganVoice sound = new OrganVoice(note, velocity, pitch, pos);
+        OrganVoice sound = new OrganVoice(note, velocity, pitch, pos, instrument);
         PLAYING.put(new Key(player, voice), new Playing(sound, System.nanoTime()));
         client.getSoundManager().play(sound);
     }
@@ -69,8 +74,8 @@ public final class ClientOrganAudio {
     }
 
     private static final class OrganVoice extends AbstractTickableSoundInstance {
-        OrganVoice(int note, int velocity, float notePitch, BlockPos pos) {
-            super(ModOrganSounds.NOTES.get(note / 12 - 2), SoundSource.BLOCKS, RandomSource.create());
+        OrganVoice(int note, int velocity, float notePitch, BlockPos pos, int instrument) {
+            super(ModOrganSounds.note(instrument, note / 12 - 2), SoundSource.BLOCKS, RandomSource.create());
             volume = Math.max(1, Math.min(127, velocity)) / 127.0F;
             pitch = notePitch;
             x = pos.getX() + 0.5;

@@ -1,78 +1,398 @@
 {
-  "organ_c1": {
+  "organ/plain_c1": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c1",
+        "name": "moriisexpansions:organ/plain/c1",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c2": {
+  "organ/plain_c2": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c2",
+        "name": "moriisexpansions:organ/plain/c2",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c3": {
+  "organ/plain_c3": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c3",
+        "name": "moriisexpansions:organ/plain/c3",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c4": {
+  "organ/plain_c4": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c4",
+        "name": "moriisexpansions:organ/plain/c4",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c5": {
+  "organ/plain_c5": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c5",
+        "name": "moriisexpansions:organ/plain/c5",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c6": {
+  "organ/plain_c6": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c6",
+        "name": "moriisexpansions:organ/plain/c6",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c7": {
+  "organ/plain_c7": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c7",
+        "name": "moriisexpansions:organ/plain/c7",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true
       }
     ]
   },
-  "organ_c8": {
+  "organ/plain_c8": {
     "sounds": [
       {
-        "name": "moriisexpansions:organ/c8",
+        "name": "moriisexpansions:organ/plain/c8",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c1": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c1",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c2": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c2",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c3": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c3",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c4": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c4",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c5": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c5",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c6": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c6",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c7": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c7",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/thumpy_c8": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/thumpy/c8",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c1": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c1",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c2": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c2",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c3": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c3",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c4": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c4",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c5": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c5",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c6": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c6",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c7": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c7",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/tutti_c8": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/tutti/c8",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c1": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c1",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c2": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c2",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c3": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c3",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c4": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c4",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c5": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c5",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c6": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c6",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c7": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c7",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/grand_jeu_c8": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/grand_jeu/c8",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c1": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c1",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c2": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c2",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c3": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c3",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c4": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c4",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c5": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c5",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c6": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c6",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c7": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c7",
+        "attenuation_distance": 64,
+        "stream": false,
+        "preload": true
+      }
+    ]
+  },
+  "organ/gospel_c8": {
+    "sounds": [
+      {
+        "name": "moriisexpansions:organ/gospel/c8",
         "attenuation_distance": 64,
         "stream": false,
         "preload": true

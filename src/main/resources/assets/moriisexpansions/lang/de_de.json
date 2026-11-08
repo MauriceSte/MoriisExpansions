@@ -1,5 +1,11 @@
 {
   "block.moriisexpansions.organ_console": "Orgelkonsole",
   "message.moriisexpansions.organ.incomplete": "Zum Spielen muss die Orgelkonsole 3-4 Blöcke lang sein.",
-  "message.moriisexpansions.organ.too_long": "Eine Orgelkonsole darf höchstens 4 Blöcke lang sein."
+  "message.moriisexpansions.organ.too_long": "Eine Orgelkonsole darf höchstens 4 Blöcke lang sein.",
+  "gui.moriisexpansions.organ.instrument": "Instrument: %s",
+  "gui.moriisexpansions.organ.instrument.plain": "Plain",
+  "gui.moriisexpansions.organ.instrument.thumpy": "Thumpy",
+  "gui.moriisexpansions.organ.instrument.tutti": "Tutti",
+  "gui.moriisexpansions.organ.instrument.grand_jeu": "Grand Jeu",
+  "gui.moriisexpansions.organ.instrument.gospel": "Gospel"
 }

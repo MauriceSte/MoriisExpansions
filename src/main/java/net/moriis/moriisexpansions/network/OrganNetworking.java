@@ -36,12 +36,12 @@ public final class OrganNetworking {
     @SubscribeEvent
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
         // Wire format changed: old clients/servers must not decode these as v1 packets.
-        var registrar = event.registrar("5");
+        var registrar = event.registrar("6");
         registrar.playToServer(OrganNotePayload.TYPE, OrganNotePayload.STREAM_CODEC,
                 OrganNetworking::handle);
         registrar.playToClient(OrganSoundPayload.TYPE, OrganSoundPayload.STREAM_CODEC,
                 (data, context) -> ClientAccess.handle(data));
-        LogUtils.getLogger().info("Registered organ START/STOP payloads, protocol 5");
+        LogUtils.getLogger().info("Registered organ START/STOP payloads, protocol 6");
     }
 
     private static void handle(OrganNotePayload data, IPayloadContext context) {
@@ -69,6 +69,7 @@ public final class OrganNetworking {
         ServerLevel level = player.serverLevel();
         if (!player.isAlive() || player.isSpectator() || data.note() < 24 || data.note() > 108
                 || data.velocity() < 1 || data.velocity() > 127
+                || !net.moriis.moriisexpansions.sound.OrganInstrument.isValid(data.instrument())
                 || data.timeMicros() < 0 || data.timeMicros() > Long.MAX_VALUE - 60_000_000L
                 || !validOrgan(player, level, data.pos())) {
             reject(player, data);
@@ -94,7 +95,7 @@ public final class OrganNetworking {
         }
         Set<UUID> listeners = new HashSet<>();
         OrganSoundPayload sound = new OrganSoundPayload(owner, data.pos(),
-                OrganNotePayload.START, data.voice(), data.note(), data.velocity(), data.timeMicros());
+                OrganNotePayload.START, data.voice(), data.note(), data.velocity(), data.timeMicros(), data.instrument());
         for (ServerPlayer listener : level.players()) {
             // Performer already plays locally. Do not echo it back.
             if (listener == player || listener.distanceToSqr(Vec3.atCenterOf(data.pos())) > 4096.0) continue;

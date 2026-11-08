@@ -39,6 +39,12 @@
   "gui.moriisexpansions.organ.pedal_status": "Sustain pedal: %s · MIDI CC64",
   "gui.moriisexpansions.organ.pedal_down": "Sustain Pedal pressed",
   "gui.moriisexpansions.organ.pedal_up": "Sustain Pedal resting",
+  "gui.moriisexpansions.organ.instrument": "Instrument: %s",
+  "gui.moriisexpansions.organ.instrument.plain": "Plain",
+  "gui.moriisexpansions.organ.instrument.thumpy": "Thumpy",
+  "gui.moriisexpansions.organ.instrument.tutti": "Tutti",
+  "gui.moriisexpansions.organ.instrument.grand_jeu": "Grand Jeu",
+  "gui.moriisexpansions.organ.instrument.gospel": "Gospel",
   "message.moriisexpansions.organ.incomplete": "An organ console needs to consist of 3-4 connected blocks.",
   "message.moriisexpansions.organ.too_long": "An organ console can be at most 4 blocks wide."
 }

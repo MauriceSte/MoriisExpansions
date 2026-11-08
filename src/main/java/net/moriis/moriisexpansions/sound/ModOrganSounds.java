@@ -22,6 +22,16 @@ public final class ModOrganSounds {
                             MoriisExpansions.MOD_ID, "organ_c" + octave),
                     HEARING_DISTANCE)).toList();
 
+    private static final List<List<SoundEvent>> INSTRUMENTS = java.util.Arrays.stream(OrganInstrument.values())
+            .map(instrument -> IntStream.rangeClosed(1, 8)
+                    .mapToObj(octave -> SoundEvent.createFixedRangeEvent(
+                            ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID,
+                                    "organ/" + instrument.path() + "_c" + octave), HEARING_DISTANCE)).toList()).toList();
+
+    public static SoundEvent note(int instrument, int octaveIndex) {
+        return INSTRUMENTS.get(instrument).get(octaveIndex);
+    }
+
     private ModOrganSounds() {}
 
     /** Compatibility with the previous package; no manual registration is needed now. */
@@ -33,6 +43,12 @@ public final class ModOrganSounds {
     @SubscribeEvent
     public static void registerSounds(RegisterEvent event) {
         event.register(Registries.SOUND_EVENT, helper -> {
+            for (OrganInstrument instrument : OrganInstrument.values()) {
+                for (int octave = 1; octave <= 8; octave++) {
+                    helper.register(ResourceLocation.fromNamespaceAndPath(MoriisExpansions.MOD_ID,
+                            "organ/" + instrument.path() + "_c" + octave), note(instrument.ordinal(), octave - 1));
+                }
+            }
             for (int index = 0; index < NOTES.size(); index++) {
                 helper.register(ResourceLocation.fromNamespaceAndPath(
                         MoriisExpansions.MOD_ID, "organ_c" + (index + 1)), NOTES.get(index));

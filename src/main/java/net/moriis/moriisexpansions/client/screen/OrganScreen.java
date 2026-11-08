@@ -36,6 +36,11 @@ public class OrganScreen extends Screen {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     };
 
+    private net.moriis.moriisexpansions.sound.OrganInstrument instrument =
+            net.moriis.moriisexpansions.sound.OrganInstrument.PLAIN;
+    private boolean instrumentsOpen;
+    private Button instrumentButton;
+    private final List<Button> instrumentOptions = new ArrayList<>();
     private final BlockPos organPos;
     private final MidiInput midi = new MidiInput();
     private final OrganPerformance performance;
@@ -92,6 +97,8 @@ public class OrganScreen extends Screen {
 
     @Override
     protected void init() {
+        instrumentsOpen = false;
+        instrumentOptions.clear();
         if (ports == null) scanPorts();
         if (mouseNote >= 0) performance.noteOff(OrganPerformance.MOUSE_CHANNEL, mouseNote);
         whites.clear();
@@ -139,15 +146,55 @@ public class OrganScreen extends Screen {
 
         addRenderableWidget(Checkbox.builder(tr("let_ring"), font)
                 .pos(keyboardX, panelY + 101)
-                .maxWidth(keyboardWidth)
+                .maxWidth(Math.max(40, keyboardWidth / 2 - 4))
                 .selected(performance.letRing())
                 .tooltip(Tooltip.create(tr("let_ring_help")))
                 .onValueChange((checkbox, checked) -> performance.setLetRing(checked))
                 .build());
 
+        instrumentButton = addRenderableWidget(Button.builder(instrumentLabel(), button ->
+                setInstrumentsOpen(!instrumentsOpen))
+                .bounds(keyboardX + keyboardWidth / 2, panelY + 99, keyboardWidth - keyboardWidth / 2, 20).build());
+
         int sliderWidth = Math.min(260, keyboardWidth);
         addRenderableWidget(new TransposeSlider((width - sliderWidth) / 2,
                 keyboardY + keyHeight + 12, sliderWidth));
+        for (var choice : net.moriis.moriisexpansions.sound.OrganInstrument.values()) {
+            Button option = Button.builder(Component.translatable(choice.translationKey()), button -> {
+                instrument = choice;
+                instrumentButton.setMessage(instrumentLabel());
+                setInstrumentsOpen(false);
+                setFocused(instrumentButton);
+            }).bounds(instrumentButton.getX(), (instrumentButton.getY() + 120 <= height - 4 ? instrumentButton.getY() + 20
+                            : Math.max(4, instrumentButton.getY() - 100)) + choice.ordinal() * 20,
+                    instrumentButton.getWidth(), 20).build();
+            option.visible = false;
+            option.active = false;
+            instrumentOptions.add(option);
+            addRenderableWidget(option);
+        }
+    }
+
+    private Component instrumentLabel() {
+        return tr("instrument", Component.translatable(instrument.translationKey()));
+    }
+
+    private void setInstrumentsOpen(boolean open) {
+        instrumentsOpen = open;
+        for (Button option : instrumentOptions) {
+            option.visible = open;
+            option.active = open;
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 256 && instrumentsOpen) {
+            setInstrumentsOpen(false);
+            setFocused(instrumentButton);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     private void scanPorts() {
@@ -244,7 +291,7 @@ public class OrganScreen extends Screen {
         }
         // Immediate local prediction: no server tick or network round trip before sound.
         long timeMicros = ClientOrganAudio.timeMicros();
-        ClientOrganAudio.start(performer, voice, organPos, note, velocity);
+        ClientOrganAudio.start(performer, voice, organPos, note, velocity, instrument.ordinal());
         if (!sendAction(OrganNotePayload.START, voice, note, velocity, timeMicros)) {
             ClientOrganAudio.stop(performer, voice);
         }
@@ -263,7 +310,7 @@ public class OrganScreen extends Screen {
         }
         try {
             PacketDistributor.sendToServer(new OrganNotePayload(
-                    organPos, action, voice, note, velocity, timeMicros));
+                    organPos, action, voice, note, velocity, timeMicros, instrument.ordinal()));
             networkError = null;
             loggedNetworkError = false;
             return true;
@@ -324,6 +371,14 @@ public class OrganScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double x, double y, int button) {
+        if (instrumentsOpen) {
+            for (Button option : instrumentOptions) {
+                if (option.isMouseOver(x, y)) return option.mouseClicked(x, y, button);
+            }
+            if (instrumentButton.isMouseOver(x, y)) return super.mouseClicked(x, y, button);
+            setInstrumentsOpen(false);
+            return true; // Never click through the popup into piano keys.
+        }
         if (button == 0) {
             OrganKey key = findKey(x, y);
             if (key != null) {
@@ -388,10 +443,10 @@ public class OrganScreen extends Screen {
         for (OrganKey key : blacks) drawKey(graphics, key, hovered);
 
         super.render(graphics, mouseX, mouseY, partialTick);
-        if (hovered != null) {
+        if (!instrumentsOpen && hovered != null) {
             graphics.renderTooltip(font,
                     Component.literal(noteName(hovered.note() + transpose)), mouseX, mouseY);
-        } else if (mouseX >= keyboardX && mouseX < keyboardX + keyboardWidth) {
+        } else if (!instrumentsOpen && mouseX >= keyboardX && mouseX < keyboardX + keyboardWidth) {
             Component detail = mouseY >= panelY + 51 && mouseY < panelY + 61 ? status
                     : mouseY >= panelY + 63 && mouseY < panelY + 73 ? net
                     : mouseY >= panelY + 75 && mouseY < panelY + 85 ? midiMonitor : null;
