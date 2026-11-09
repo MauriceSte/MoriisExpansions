@@ -1,0 +1,68 @@
+{
+  "variants": {
+    "facing=south,above=false,below=false": {
+      "model": "moriisexpansions:block/single_organ_pipes",
+      "y": 0
+    },
+    "facing=south,above=false,below=true": {
+      "model": "moriisexpansions:block/upper_organ_pipes",
+      "y": 0
+    },
+    "facing=south,above=true,below=false": {
+      "model": "moriisexpansions:block/lower_organ_pipes",
+      "y": 0
+    },
+    "facing=south,above=true,below=true": {
+      "model": "moriisexpansions:block/middle_organ_pipes",
+      "y": 0
+    },
+    "facing=west,above=false,below=false": {
+      "model": "moriisexpansions:block/single_organ_pipes",
+      "y": 90
+    },
+    "facing=west,above=false,below=true": {
+      "model": "moriisexpansions:block/upper_organ_pipes",
+      "y": 90
+    },
+    "facing=west,above=true,below=false": {
+      "model": "moriisexpansions:block/lower_organ_pipes",
+      "y": 90
+    },
+    "facing=west,above=true,below=true": {
+      "model": "moriisexpansions:block/middle_organ_pipes",
+      "y": 90
+    },
+    "facing=north,above=false,below=false": {
+      "model": "moriisexpansions:block/single_organ_pipes",
+      "y": 180
+    },
+    "facing=north,above=false,below=true": {
+      "model": "moriisexpansions:block/upper_organ_pipes",
+      "y": 180
+    },
+    "facing=north,above=true,below=false": {
+      "model": "moriisexpansions:block/lower_organ_pipes",
+      "y": 180
+    },
+    "facing=north,above=true,below=true": {
+      "model": "moriisexpansions:block/middle_organ_pipes",
+      "y": 180
+    },
+    "facing=east,above=false,below=false": {
+      "model": "moriisexpansions:block/single_organ_pipes",
+      "y": 270
+    },
+    "facing=east,above=false,below=true": {
+      "model": "moriisexpansions:block/upper_organ_pipes",
+      "y": 270
+    },
+    "facing=east,above=true,below=false": {
+      "model": "moriisexpansions:block/lower_organ_pipes",
+      "y": 270
+    },
+    "facing=east,above=true,below=true": {
+      "model": "moriisexpansions:block/middle_organ_pipes",
+      "y": 270
+    }
+  }
+}

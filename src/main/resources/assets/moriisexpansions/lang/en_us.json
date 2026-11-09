@@ -46,5 +46,6 @@
   "gui.moriisexpansions.organ.instrument.grand_jeu": "Grand Jeu",
   "gui.moriisexpansions.organ.instrument.gospel": "Gospel",
   "message.moriisexpansions.organ.incomplete": "An organ console needs to consist of 3-4 connected blocks.",
-  "message.moriisexpansions.organ.too_long": "An organ console can be at most 4 blocks wide."
+  "message.moriisexpansions.organ.too_long": "An organ console can be at most 4 blocks wide.",
+  "block.moriisexpansions.organ_pipes": "Organ Pipes"
 }

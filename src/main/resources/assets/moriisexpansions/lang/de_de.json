@@ -7,5 +7,6 @@
   "gui.moriisexpansions.organ.instrument.thumpy": "Thumpy",
   "gui.moriisexpansions.organ.instrument.tutti": "Tutti",
   "gui.moriisexpansions.organ.instrument.grand_jeu": "Grand Jeu",
-  "gui.moriisexpansions.organ.instrument.gospel": "Gospel"
+  "gui.moriisexpansions.organ.instrument.gospel": "Gospel",
+  "block.moriisexpansions.organ_pipes": "Orgelpfeifen"
 }

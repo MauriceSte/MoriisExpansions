@@ -32,6 +32,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.JOINT);
                         output.accept(ModItems.ROLLING_PAPER);
                         output.accept(ModBlocks.ORGAN_CONSOLE);
+                        output.accept(ModBlocks.ORGAN_PIPES);
                     }).build());
 
     public static void register(IEventBus eventBus) {

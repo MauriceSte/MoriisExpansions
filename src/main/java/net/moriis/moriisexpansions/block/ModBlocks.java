@@ -11,6 +11,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.moriis.moriisexpansions.MoriisExpansions;
 import net.moriis.moriisexpansions.block.custom.CannabisCropBlock;
 import net.moriis.moriisexpansions.block.custom.OrganConsoleBlock;
+import net.moriis.moriisexpansions.block.custom.OrganPipesBlock;
 import net.moriis.moriisexpansions.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -52,6 +53,13 @@ public class ModBlocks {
                                     .sound(SoundType.WOOD)
                     )
             );
+
+    public static final DeferredBlock<OrganPipesBlock> ORGAN_PIPES = registerBlock("organ_pipes",
+            () -> new OrganPipesBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(3.0F)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
