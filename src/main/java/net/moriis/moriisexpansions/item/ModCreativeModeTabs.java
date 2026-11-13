@@ -33,6 +33,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.ROLLING_PAPER);
                         output.accept(ModBlocks.ORGAN_CONSOLE);
                         output.accept(ModBlocks.ORGAN_PIPES);
+                        output.accept(ModItems.FRACTURED_CLAVICULAR);
                     }).build());
 
     public static void register(IEventBus eventBus) {

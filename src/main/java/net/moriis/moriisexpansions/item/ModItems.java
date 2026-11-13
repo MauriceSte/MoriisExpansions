@@ -29,6 +29,8 @@ public class ModItems {
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> KIEF = ITEMS.register("kief",
             () -> new Item(new Item.Properties()));
+    public static final DeferredItem<Item> FRACTURED_CLAVICULAR = ITEMS.register("fractured_clavicular",
+            () -> new Item(new Item.Properties()));
 
     //Special BlockItem for Seed
     public static final DeferredItem<ItemNameBlockItem> CANNABIS_SEEDS =
